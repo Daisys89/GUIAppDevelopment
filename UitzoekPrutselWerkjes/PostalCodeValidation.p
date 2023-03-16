@@ -1,4 +1,4 @@
-/* 
+ 
 DEFINE VARIABLE cPostalCode         AS CHARACTER INITIAL "10551-EN    " NO-UNDO.
 DEFINE VARIABLE iPCLength           AS INTEGER   NO-UNDO.
 DEFINE VARIABLE iPCNumbers          AS INTEGER   NO-UNDO.
@@ -36,13 +36,13 @@ DO:
     MESSAGE "iPCNumCorrect is:" iPCNumCorrect VIEW-AS ALERT-BOX.
     // return false.
 END.   
-*/
 
+/*
 // Correct email FORMAT //
-DEFINE VARIABLE cPostalCode AS CHARACTER INITIAL "10551-nn" NO-UNDO.
+DEFINE VARIABLE cPostalCode AS CHARACTER INITIAL " 1055-nn " NO-UNDO.
 DEFINE VARIABLE cOutput AS CHARACTER NO-UNDO.
 
-DEFINE VARIABLE iPCNumbers AS INTEGER   NO-UNDO.
+DEFINE VARIABLE iPCNumbers AS CHARACTER   NO-UNDO.
 DEFINE VARIABLE cPCLetters AS CHARACTER NO-UNDO.
 
 IF cPostalCode = "" THEN RETURN "".
@@ -52,8 +52,10 @@ cPostalCode = REPLACE(STRING(cPostalCode),"-","").
 cPostalCode = TRIM(cPostalCode).
 MESSAGE "cPostalCode is:" cPostalCode VIEW-AS ALERT-BOX.
 
-iPCNumbers = INTEGER(SUBSTRING(cPostalCode,1,4)).
+iPCNumbers = SUBSTRING(cPostalCode,1,4).
+MESSAGE "iPCNumbers is:" iPCNumbers VIEW-AS ALERT-BOX.
 cPCLetters = SUBSTRING(cPostalCode,5,6).
+MESSAGE "cPCLetters is: "cPCLetters VIEW-AS ALERT-BOX.
 
 DO: 
     cOutput = STRING(iPCNumbers) + CAPS(cPCLetters).
@@ -61,3 +63,4 @@ DO:
 END.    
 
 RETURN cOutput.
+*/
