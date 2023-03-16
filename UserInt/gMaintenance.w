@@ -305,12 +305,13 @@ DO:
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL Btn_Save Dialog-Frame
 ON CHOOSE OF Btn_Save IN FRAME Dialog-Frame /* Save */
 DO:
-        DEFINE VARIABLE lAnswer            AS LOGICAL NO-UNDO.  
-        DEFINE VARIABLE lEmailValidated    AS LOGICAL NO-UNDO.
+        DEFINE VARIABLE lAnswer              AS LOGICAL NO-UNDO.  
+        DEFINE VARIABLE lEmailValidated      AS LOGICAL NO-UNDO.
+        DEFINE VARIABLE lPostalCodeValidated AS LOGICAL NO-UNDO.
         
         DO WITH FRAME {&FRAME-NAME}:
-            lEmailValidated = ValidateEmail(ttCustomerUpd.EmailAddress:INPUT-VALUE). 
-            
+            lEmailValidated      = ValidateEmail(ttCustomerUpd.EmailAddress:INPUT-VALUE). 
+            lPostalCodeValidated = ValidatePostalCode(ttCustomerUpd.PostalCode:INPUT-VALUE).
               
             IF ttCustomerUpd.Name:INPUT-VALUE = "" THEN 
             DO:
@@ -326,7 +327,13 @@ DO:
                 APPLY "ENTRY":U TO ttCustomerUpd.Address IN FRAME {&FRAME-NAME}. 
                 RETURN NO-APPLY .   
             END.
-            
+            IF NOT lPostalCodeValidated THEN 
+            DO:
+                MESSAGE "You have entered an incorrect postal code. Use format 1234AB."
+                    VIEW-AS ALERT-BOX.
+                APPLY "ENTRY":U TO ttCustomerUpd.PostalCode IN FRAME {&FRAME-NAME}.
+                RETURN NO-APPLY.
+            END.
             IF ttCustomerUpd.PostalCode:INPUT-VALUE = "" THEN 
             DO: 
                 MESSAGE "You forgot to enter the postal code.":U
@@ -594,12 +601,12 @@ FUNCTION CorrectPostalCodeInput RETURNS CHARACTER
   ( INPUT cPostalCode AS CHARACTER ):
     /*------------------------------------------------------------------------------
      Purpose:
-     Notes: WERKT NOG NIET!! ERROR Invalid character in numeric input (76).
+     Notes: 
     ------------------------------------------------------------------------------*/
     DEFINE VARIABLE cOutputEmail    AS CHARACTER NO-UNDO.
 
     DEFINE VARIABLE cPCNumbers AS CHARACTER   NO-UNDO.
-    DEFINE VARIABLE cPCLetters AS CHARACTER NO-UNDO.
+    DEFINE VARIABLE cPCLetters AS CHARACTER   NO-UNDO.
 
     IF cPostalCode = "" THEN RETURN "".
 
@@ -678,21 +685,12 @@ FUNCTION ValidatePostalCode RETURNS LOGICAL
      Purpose:
      Notes:
     ------------------------------------------------------------------------------*/
-    DEFINE VARIABLE iPCLength           AS INTEGER   NO-UNDO.
-    DEFINE VARIABLE iPCNumbers          AS INTEGER   NO-UNDO.
-    DEFINE VARIABLE cPCLetters          AS CHARACTER NO-UNDO.
-    DEFINE VARIABLE iPCNumCorrect       AS LOGICAL   NO-UNDO.
-
-    DEFINE VARIABLE CorrectedPostalCode AS CHARACTER NO-UNDO.
-
-    cPostalCode = REPLACE(STRING(cPostalCode)," ","").
-    cPostalCode = REPLACE(STRING(cPostalCode),"-","").
-    cPostalCode = TRIM(cPostalCode).
-
-    iPCLength = LENGTH(cPostalCode).   
-
-    iPCNumbers = INTEGER(SUBSTRING(cPostalCode,1,4)).
-
+    DEFINE VARIABLE iPCLength           AS INTEGER     NO-UNDO.
+    DEFINE VARIABLE iPCNumbers          AS CHARACTER   NO-UNDO.
+    DEFINE VARIABLE cPCLetters          AS CHARACTER   NO-UNDO.
+    
+    iPCLength = LENGTH(cPostalCode).
+    iPCNumbers = SUBSTRING(cPostalCode,1,4).
     cPCLetters = SUBSTRING(cPostalCode,5,6).
 
     IF LENGTH(cPostalCode) = 6 AND LENGTH(iPCNumbers) = 4 AND LENGTH(cPCLetters) = 2 THEN 
