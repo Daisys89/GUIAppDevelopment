@@ -135,7 +135,7 @@ FUNCTION ValidateEmail RETURNS LOGICAL
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION-FORWARD ValidatePostalCode Dialog-Frame 
 FUNCTION ValidatePostalCode RETURNS LOGICAL
-  ( INPUT cPostalCode AS CHARACTER ) FORWARD.
+  ( INPUT cPostCode AS CHARACTER ) FORWARD.
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
@@ -432,7 +432,7 @@ DO:
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL ttCustomerUpd.PostalCode Dialog-Frame
 ON LEAVE OF ttCustomerUpd.PostalCode IN FRAME Dialog-Frame /* Postal Code */
 DO:
-    ttCustomerUpd.PostalCode:SCREEN-VALUE = CorrectPostalCodeInput(ttCustomerUpd.EmailAddress:INPUT-VALUE).
+    ttCustomerUpd.PostalCode:SCREEN-VALUE = CorrectPostalCodeInput(ttCustomerUpd.PostalCode:INPUT-VALUE).
     END.
 
 /* _UIB-CODE-BLOCK-END */
@@ -594,11 +594,11 @@ FUNCTION CorrectPostalCodeInput RETURNS CHARACTER
   ( INPUT cPostalCode AS CHARACTER ):
     /*------------------------------------------------------------------------------
      Purpose:
-     Notes: WERKT NOG NIET
+     Notes: WERKT NOG NIET!! ERROR Invalid character in numeric input (76).
     ------------------------------------------------------------------------------*/
-    DEFINE VARIABLE cOutput    AS CHARACTER NO-UNDO.
+    DEFINE VARIABLE cOutputEmail    AS CHARACTER NO-UNDO.
 
-    DEFINE VARIABLE iPCNumbers AS INTEGER   NO-UNDO.
+    DEFINE VARIABLE cPCNumbers AS CHARACTER   NO-UNDO.
     DEFINE VARIABLE cPCLetters AS CHARACTER NO-UNDO.
 
     IF cPostalCode = "" THEN RETURN "".
@@ -607,14 +607,14 @@ FUNCTION CorrectPostalCodeInput RETURNS CHARACTER
     cPostalCode = REPLACE(STRING(cPostalCode),"-","").
     cPostalCode = TRIM(cPostalCode).
 
-    iPCNumbers = INTEGER(SUBSTRING(cPostalCode,1,4)).
+    cPCNumbers = SUBSTRING(cPostalCode,1,4).
     cPCLetters = SUBSTRING(cPostalCode,5,6).
 
     DO: 
-        cOutput = STRING(iPCNumbers) + CAPS(cPCLetters).
+        cOutputEmail = STRING(cPCNumbers) + CAPS(cPCLetters).
     END.    
 
-    RETURN cOutput.
+    RETURN cOutputEmail.
 
 END FUNCTION.
 
