@@ -244,8 +244,8 @@ IF SESSION:DISPLAY-TYPE = "GUI":U THEN
   CREATE WINDOW C-Win ASSIGN
          HIDDEN             = YES
          TITLE              = "Customers"
-         HEIGHT             = 13.81
-         WIDTH              = 102.4
+         HEIGHT             = 13.95
+         WIDTH              = 104.2
          MAX-HEIGHT         = 48.43
          MAX-WIDTH          = 384
          VIRTUAL-HEIGHT     = 48.43
