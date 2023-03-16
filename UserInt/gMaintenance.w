@@ -135,7 +135,7 @@ FUNCTION ValidateEmail RETURNS LOGICAL
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION-FORWARD ValidatePostalCode Dialog-Frame 
 FUNCTION ValidatePostalCode RETURNS LOGICAL
-  ( INPUT cPostCode AS CHARACTER ) FORWARD.
+  ( INPUT cPostalCode AS CHARACTER ) FORWARD.
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
@@ -424,6 +424,17 @@ DO:
 &ANALYZE-RESUME
 
 
+&Scoped-define SELF-NAME ttCustomerUpd.Country
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL ttCustomerUpd.Country Dialog-Frame
+ON LEAVE OF ttCustomerUpd.Country IN FRAME Dialog-Frame /* Country */
+DO:
+    ttCustomerUpd.Country:SCREEN-VALUE = CorrectCustomerInput(ttCustomerUpd.Country:INPUT-VALUE).  
+END.
+
+/* _UIB-CODE-BLOCK-END */
+&ANALYZE-RESUME
+
+
 &Scoped-define SELF-NAME ttCustomerUpd.Name
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL ttCustomerUpd.Name Dialog-Frame
 ON LEAVE OF ttCustomerUpd.Name IN FRAME Dialog-Frame /* Name */
@@ -558,10 +569,11 @@ PROCEDURE InitializeObjects :
         IF RETURN-VALUE = "" THEN
             FIND FIRST ttCustomerUpd.   
     END.
-    ELSE 
+    ELSE DO:
         CREATE ttCustomerUpd.
+        ttCustomerUpd.Country = "".
+    END.
     
-    // ttCustomerUpd.Country = "".   
 
     PUBLISH "CloseWindows":U .
 END PROCEDURE.
