@@ -294,7 +294,14 @@ ON LEAVE OF ttCustomerUpd.Address IN FRAME Dialog-Frame /* Address */
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL Btn_Cancel Dialog-Frame
 ON CHOOSE OF Btn_Cancel IN FRAME Dialog-Frame /* Cancel */
     DO:
-        APPLY "CLOSE":U TO THIS-PROCEDURE.  
+        DEFINE VARIABLE lAnswer AS LOGICAL NO-UNDO.
+        MESSAGE SUBSTITUTE("Are you sure you want to loose the changes you made to customer '&1' ?", ttCustomerUpd.Name) // add current customer name.
+            VIEW-AS ALERT-BOX BUTTONS YES-NO UPDATE lAnswer. 
+        
+        IF lAnswer THEN
+            APPLY "CLOSE":U TO THIS-PROCEDURE. 
+        ELSE 
+            RETURN NO-APPLY.
     END.
 
 /* _UIB-CODE-BLOCK-END */
