@@ -9,11 +9,11 @@
 
 /* Temp-Table and Buffer definitions                                    */
 DEFINE TEMP-TABLE ttCustomerUpd NO-UNDO LIKE Customer
-       FIELD RowIdent AS ROWID
-       INDEX RowIdent RowIdent.
+    FIELD RowIdent AS ROWID
+    INDEX RowIdent RowIdent.
 DEFINE TEMP-TABLE ttSalesrep NO-UNDO LIKE Salesrep
-       FIELD RowIdent AS ROWID
-       INDEX RowIdent RowIdent.
+    FIELD RowIdent AS ROWID
+    INDEX RowIdent RowIdent.
 
 
 
@@ -48,9 +48,9 @@ DEFINE INPUT PARAMETER prowRowid AS ROWID      NO-UNDO.
 DEFINE OUTPUT PARAMETER TABLE FOR ttCustomerUpd.
 
 /* Local Variable Definitions ---                                       */
-DEFINE VARIABLE glResponse   AS LOGICAL   NO-UNDO.
+DEFINE VARIABLE glResponse AS LOGICAL NO-UNDO.
 
-DEFINE VARIABLE ghDataUtil   AS HANDLE    NO-UNDO.
+DEFINE VARIABLE ghDataUtil AS HANDLE  NO-UNDO.
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
@@ -146,70 +146,70 @@ FUNCTION ValidatePostalCode RETURNS LOGICAL
 
 /* Definitions of the field level widgets                               */
 DEFINE BUTTON Btn_Cancel AUTO-END-KEY 
-     LABEL "Cancel" 
-     SIZE 15 BY 1.14
-     BGCOLOR 8 .
+    LABEL "Cancel" 
+    SIZE 15 BY 1.14
+    BGCOLOR 8 .
 
 DEFINE BUTTON Btn_Save AUTO-GO 
-     LABEL "Save" 
-     SIZE 15 BY 1.14
-     BGCOLOR 8 .
+    LABEL "Save" 
+    SIZE 15 BY 1.14
+    BGCOLOR 8 .
 
 /* Query definitions                                                    */
 &ANALYZE-SUSPEND
 DEFINE QUERY Dialog-Frame FOR 
-      ttCustomerUpd SCROLLING.
+    ttCustomerUpd SCROLLING.
 &ANALYZE-RESUME
 
 /* ************************  Frame Definitions  *********************** */
 
 DEFINE FRAME Dialog-Frame
-     ttCustomerUpd.CustNum AT ROW 1.48 COL 13 COLON-ALIGNED WIDGET-ID 8
-          VIEW-AS FILL-IN 
-          SIZE 9 BY 1
-     ttCustomerUpd.Name AT ROW 2.48 COL 13 COLON-ALIGNED WIDGET-ID 12
-          VIEW-AS FILL-IN 
-          SIZE 32 BY 1
-          BGCOLOR 14 
-     ttCustomerUpd.Address AT ROW 3.48 COL 13 COLON-ALIGNED WIDGET-ID 2
-          VIEW-AS FILL-IN 
-          SIZE 37 BY 1
-          BGCOLOR 14 
-     ttCustomerUpd.PostalCode AT ROW 4.48 COL 13 COLON-ALIGNED WIDGET-ID 16
-          VIEW-AS FILL-IN 
-          SIZE 15.6 BY 1
-          BGCOLOR 14 
-     ttCustomerUpd.City AT ROW 5.48 COL 13 COLON-ALIGNED WIDGET-ID 4
-          VIEW-AS FILL-IN 
-          SIZE 27 BY 1
-          BGCOLOR 14 
-     ttCustomerUpd.State AT ROW 6.48 COL 13 COLON-ALIGNED WIDGET-ID 20
-          VIEW-AS FILL-IN 
-          SIZE 22 BY 1
-     ttCustomerUpd.Country AT ROW 7.48 COL 13 COLON-ALIGNED WIDGET-ID 6
-          VIEW-AS FILL-IN 
-          SIZE 22 BY 1
-          BGCOLOR 14 
-     ttCustomerUpd.Phone AT ROW 8.48 COL 13 COLON-ALIGNED WIDGET-ID 14
-          VIEW-AS FILL-IN 
-          SIZE 22 BY 1
-     ttCustomerUpd.EmailAddress AT ROW 9.48 COL 13 COLON-ALIGNED WIDGET-ID 10
-          VIEW-AS FILL-IN 
-          SIZE 37 BY 1
-          BGCOLOR 14 
-     ttCustomerUpd.SalesRep AT ROW 10.48 COL 13 COLON-ALIGNED WIDGET-ID 22
-          VIEW-AS COMBO-BOX INNER-LINES 5
-          LIST-ITEM-PAIRS "None","None"
-          DROP-DOWN-LIST
-          SIZE 16 BY 1
-          BGCOLOR 14 
-     Btn_Save AT ROW 1.95 COL 77
-     Btn_Cancel AT ROW 3.43 COL 77
-     SPACE(4.39) SKIP(7.85)
+    ttCustomerUpd.CustNum AT ROW 1.48 COL 13 COLON-ALIGNED WIDGET-ID 8
+    VIEW-AS FILL-IN 
+    SIZE 9 BY 1
+    ttCustomerUpd.Name AT ROW 2.48 COL 13 COLON-ALIGNED WIDGET-ID 12
+    VIEW-AS FILL-IN 
+    SIZE 32 BY 1
+    BGCOLOR 14 
+    ttCustomerUpd.Address AT ROW 3.48 COL 13 COLON-ALIGNED WIDGET-ID 2
+    VIEW-AS FILL-IN 
+    SIZE 37 BY 1
+    BGCOLOR 14 
+    ttCustomerUpd.PostalCode AT ROW 4.48 COL 13 COLON-ALIGNED WIDGET-ID 16
+    VIEW-AS FILL-IN 
+    SIZE 15.6 BY 1
+    BGCOLOR 14 
+    ttCustomerUpd.City AT ROW 5.48 COL 13 COLON-ALIGNED WIDGET-ID 4
+    VIEW-AS FILL-IN 
+    SIZE 27 BY 1
+    BGCOLOR 14 
+    ttCustomerUpd.State AT ROW 6.48 COL 13 COLON-ALIGNED WIDGET-ID 20
+    VIEW-AS FILL-IN 
+    SIZE 22 BY 1
+    ttCustomerUpd.Country AT ROW 7.48 COL 13 COLON-ALIGNED WIDGET-ID 6
+    VIEW-AS FILL-IN 
+    SIZE 22 BY 1
+    BGCOLOR 14 
+    ttCustomerUpd.Phone AT ROW 8.48 COL 13 COLON-ALIGNED WIDGET-ID 14
+    VIEW-AS FILL-IN 
+    SIZE 22 BY 1
+    ttCustomerUpd.EmailAddress AT ROW 9.48 COL 13 COLON-ALIGNED WIDGET-ID 10
+    VIEW-AS FILL-IN 
+    SIZE 37 BY 1
+    BGCOLOR 14 
+    ttCustomerUpd.SalesRep AT ROW 10.48 COL 13 COLON-ALIGNED WIDGET-ID 22
+    VIEW-AS COMBO-BOX INNER-LINES 5
+    LIST-ITEM-PAIRS "None","None"
+    DROP-DOWN-LIST
+    SIZE 16 BY 1
+    BGCOLOR 14 
+    Btn_Save AT ROW 1.95 COL 77
+    Btn_Cancel AT ROW 3.33 COL 77
+    SPACE(3.19) SKIP(7.14)
     WITH VIEW-AS DIALOG-BOX KEEP-TAB-ORDER 
-         SIDE-LABELS NO-UNDERLINE THREE-D  SCROLLABLE 
-         TITLE "Customer Maintenance"
-         DEFAULT-BUTTON Btn_Save CANCEL-BUTTON Btn_Cancel WIDGET-ID 100.
+    SIDE-LABELS NO-UNDERLINE THREE-D  SCROLLABLE 
+    TITLE "Customer Maintenance"
+    DEFAULT-BUTTON Btn_Save CANCEL-BUTTON Btn_Cancel WIDGET-ID 100.
 
 
 /* *********************** Procedure Settings ************************ */
@@ -242,8 +242,8 @@ DEFINE FRAME Dialog-Frame
 /* SETTINGS FOR DIALOG-BOX Dialog-Frame
    FRAME-NAME Custom                                                    */
 ASSIGN 
-       FRAME Dialog-Frame:SCROLLABLE       = FALSE
-       FRAME Dialog-Frame:HIDDEN           = TRUE.
+    FRAME Dialog-Frame:SCROLLABLE = FALSE
+    FRAME Dialog-Frame:HIDDEN     = TRUE.
 
 /* SETTINGS FOR FILL-IN ttCustomerUpd.CustNum IN FRAME Dialog-Frame
    NO-ENABLE                                                            */
@@ -270,7 +270,7 @@ ASSIGN
 &Scoped-define SELF-NAME Dialog-Frame
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL Dialog-Frame Dialog-Frame
 ON WINDOW-CLOSE OF FRAME Dialog-Frame /* Customer Maintenance */
-DO:
+    DO:
         APPLY "END-ERROR":U TO SELF.
     END.
 
@@ -281,7 +281,7 @@ DO:
 &Scoped-define SELF-NAME ttCustomerUpd.Address
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL ttCustomerUpd.Address Dialog-Frame
 ON LEAVE OF ttCustomerUpd.Address IN FRAME Dialog-Frame /* Address */
-DO:
+    DO:
         ttCustomerUpd.Address:SCREEN-VALUE = CorrectCustomerInput(ttCustomerUpd.Address:INPUT-VALUE).  
     END.
 
@@ -292,7 +292,7 @@ DO:
 &Scoped-define SELF-NAME Btn_Cancel
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL Btn_Cancel Dialog-Frame
 ON CHOOSE OF Btn_Cancel IN FRAME Dialog-Frame /* Cancel */
-DO:
+    DO:
         DEFINE VARIABLE lAnswer AS LOGICAL NO-UNDO.
         
         MESSAGE SUBSTITUTE("Are you sure you want to loose the changes you made to customer '&1' ?", ttCustomerUpd.Name)
@@ -311,66 +311,65 @@ DO:
 &Scoped-define SELF-NAME Btn_Save
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL Btn_Save Dialog-Frame
 ON CHOOSE OF Btn_Save IN FRAME Dialog-Frame /* Save */
-DO:
+    DO:
         DEFINE VARIABLE lAnswer              AS LOGICAL NO-UNDO.  
         DEFINE VARIABLE lEmailValidated      AS LOGICAL NO-UNDO.
-        DEFINE VARIABLE lPostalCodeValidated AS LOGICAL NO-UNDO.
+        DEFINE VARIABLE lPostalCodeValidated AS LOGICAL NO-UNDO.        
         
-        DO WITH FRAME {&FRAME-NAME}:
-            lEmailValidated      = ValidateEmail(ttCustomerUpd.EmailAddress:INPUT-VALUE). 
-            lPostalCodeValidated = ValidatePostalCode(ttCustomerUpd.PostalCode:INPUT-VALUE).
+        lEmailValidated      = ValidateEmail(ttCustomerUpd.EmailAddress:INPUT-VALUE). 
+        lPostalCodeValidated = ValidatePostalCode(ttCustomerUpd.PostalCode:INPUT-VALUE).
               
-            IF ttCustomerUpd.Name:INPUT-VALUE = "" THEN 
-            DO:
-                MESSAGE "You forgot to enter the name.":U
-                    VIEW-AS ALERT-BOX.
-                APPLY "ENTRY":U TO ttCustomerUpd.Name IN FRAME {&FRAME-NAME}.
-                RETURN NO-APPLY .   
-            END.  
-            IF ttCustomerUpd.Address:INPUT-VALUE = "" THEN 
-            DO:
-                MESSAGE "You forgot to enter the address.":U
-                    VIEW-AS ALERT-BOX.
-                APPLY "ENTRY":U TO ttCustomerUpd.Address IN FRAME {&FRAME-NAME}. 
-                RETURN NO-APPLY .   
-            END.
-            IF NOT lPostalCodeValidated THEN 
-            DO:
-                MESSAGE "You have entered an incorrect postal code. Please use format 1234AB."
-                    VIEW-AS ALERT-BOX.        
-                APPLY "ENTRY":U TO ttCustomerUpd.PostalCode IN FRAME {&FRAME-NAME}.
-                RETURN NO-APPLY.
+        IF ttCustomerUpd.Name:INPUT-VALUE = "" THEN 
+        DO:
+            MESSAGE "You forgot to enter the name.":U
+                VIEW-AS ALERT-BOX.
+            APPLY "ENTRY":U TO ttCustomerUpd.Name IN FRAME {&FRAME-NAME}.
+            RETURN NO-APPLY .   
+        END.  
+        IF ttCustomerUpd.Address:INPUT-VALUE = "" THEN 
+        DO:
+            MESSAGE "You forgot to enter the address.":U
+                VIEW-AS ALERT-BOX.
+            APPLY "ENTRY":U TO ttCustomerUpd.Address IN FRAME {&FRAME-NAME}. 
+            RETURN NO-APPLY .   
+        END.
+        IF NOT lPostalCodeValidated THEN 
+        DO:
+            MESSAGE "You have entered an incorrect postal code. Please use format 1234AB."
+                VIEW-AS ALERT-BOX.        
+            APPLY "ENTRY":U TO ttCustomerUpd.PostalCode IN FRAME {&FRAME-NAME}.
+            RETURN NO-APPLY.
               
-            END.
-            IF ttCustomerUpd.PostalCode:INPUT-VALUE = "" THEN 
-            DO: 
-                MESSAGE "You forgot to enter the postal code.":U
-                    VIEW-AS ALERT-BOX.
-                APPLY "ENTRY":U TO ttCustomerUpd.PostalCode IN FRAME {&FRAME-NAME}.
-                RETURN NO-APPLY.    
-            END.
-            IF ttCustomerUpd.City:INPUT-VALUE = "" THEN 
-            DO:
-                MESSAGE "You forgot to enter the city.":U
-                    VIEW-AS ALERT-BOX.
-                APPLY "ENTRY":U TO ttCustomerUpd.City IN FRAME {&FRAME-NAME}.
-                RETURN NO-APPLY.
-            END.
-            IF ttCustomerUpd.Country:INPUT-VALUE = "" THEN 
-            DO:
-                MESSAGE "You forgot to enter the country.":U
-                    VIEW-AS ALERT-BOX. 
-                APPLY "ENTRY":U TO ttCustomerUpd.Country IN FRAME {&FRAME-NAME}.
-                RETURN NO-APPLY.
-            END.
-            IF NOT lEmailValidated THEN 
-            DO:
-                MESSAGE "You have entered an invalid email address."
-                    VIEW-AS ALERT-BOX.
-                APPLY "ENTRY":U TO ttCustomerUpd.EmailAddress IN FRAME {&FRAME-NAME}.
-                RETURN NO-APPLY.
-            END.
-        END.    
+        END.
+        IF ttCustomerUpd.PostalCode:INPUT-VALUE = "" THEN 
+        DO: 
+            MESSAGE "You forgot to enter the postal code.":U
+                VIEW-AS ALERT-BOX.
+            APPLY "ENTRY":U TO ttCustomerUpd.PostalCode IN FRAME {&FRAME-NAME}.
+            RETURN NO-APPLY.    
+        END.
+        IF ttCustomerUpd.City:INPUT-VALUE = "" THEN 
+        DO:
+            MESSAGE "You forgot to enter the city.":U
+                VIEW-AS ALERT-BOX.
+            APPLY "ENTRY":U TO ttCustomerUpd.City IN FRAME {&FRAME-NAME}.
+            RETURN NO-APPLY.
+        END.
+        IF ttCustomerUpd.Country:INPUT-VALUE = "" THEN 
+        DO:
+            MESSAGE "You forgot to enter the country.":U
+                VIEW-AS ALERT-BOX. 
+            APPLY "ENTRY":U TO ttCustomerUpd.Country IN FRAME {&FRAME-NAME}.
+            RETURN NO-APPLY.
+        END.
+        IF NOT lEmailValidated THEN 
+        DO:
+            MESSAGE "You have entered an invalid email address."
+                VIEW-AS ALERT-BOX.
+            APPLY "ENTRY":U TO ttCustomerUpd.EmailAddress IN FRAME {&FRAME-NAME}.
+            RETURN NO-APPLY.
+        END.
+            
         IF ttCustomerUpd.EmailAddress:INPUT-VALUE = "" THEN 
         DO: 
             MESSAGE "You forgot to enter the email address.":U
@@ -424,7 +423,7 @@ DO:
 &Scoped-define SELF-NAME ttCustomerUpd.City
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL ttCustomerUpd.City Dialog-Frame
 ON LEAVE OF ttCustomerUpd.City IN FRAME Dialog-Frame /* City */
-DO:
+    DO:
         ttCustomerUpd.City:SCREEN-VALUE = CorrectCustomerInput(ttCustomerUpd.City:INPUT-VALUE).  
     END.
 
@@ -435,7 +434,7 @@ DO:
 &Scoped-define SELF-NAME ttCustomerUpd.Country
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL ttCustomerUpd.Country Dialog-Frame
 ON LEAVE OF ttCustomerUpd.Country IN FRAME Dialog-Frame /* Country */
-DO:
+    DO:
         ttCustomerUpd.Country:SCREEN-VALUE = CorrectCustomerInput(ttCustomerUpd.Country:INPUT-VALUE).  
     END.
 
@@ -446,7 +445,7 @@ DO:
 &Scoped-define SELF-NAME ttCustomerUpd.Name
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL ttCustomerUpd.Name Dialog-Frame
 ON LEAVE OF ttCustomerUpd.Name IN FRAME Dialog-Frame /* Name */
-DO:
+    DO:
         ttCustomerUpd.Name:SCREEN-VALUE = CorrectCustomerInput(ttCustomerUpd.NAME:INPUT-VALUE).
     END.
 
@@ -457,7 +456,7 @@ DO:
 &Scoped-define SELF-NAME ttCustomerUpd.PostalCode
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL ttCustomerUpd.PostalCode Dialog-Frame
 ON LEAVE OF ttCustomerUpd.PostalCode IN FRAME Dialog-Frame /* Postal Code */
-DO:   
+    DO:   
         ttCustomerUpd.PostalCode:SCREEN-VALUE = CorrectPostalCodeInput(ttCustomerUpd.PostalCode:INPUT-VALUE).   
     END.
 
@@ -468,7 +467,7 @@ DO:
 &Scoped-define SELF-NAME ttCustomerUpd.State
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL ttCustomerUpd.State Dialog-Frame
 ON LEAVE OF ttCustomerUpd.State IN FRAME Dialog-Frame /* State */
-DO:
+    DO:
         ttCustomerUpd.State:SCREEN-VALUE = CorrectCustomerInput(ttCustomerUpd.State:INPUT-VALUE).  
     END.
 
@@ -507,16 +506,16 @@ RUN disable_UI.
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE disable_UI Dialog-Frame  _DEFAULT-DISABLE
 PROCEDURE disable_UI :
-/*------------------------------------------------------------------------------
-  Purpose:     DISABLE the User Interface
-  Parameters:  <none>
-  Notes:       Here we clean-up the user-interface by deleting
-               dynamic widgets we have created and/or hide 
-               frames.  This procedure is usually called when
-               we are ready to "clean-up" after running.
-------------------------------------------------------------------------------*/
-  /* Hide all frames. */
-  HIDE FRAME Dialog-Frame.
+    /*------------------------------------------------------------------------------
+      Purpose:     DISABLE the User Interface
+      Parameters:  <none>
+      Notes:       Here we clean-up the user-interface by deleting
+                   dynamic widgets we have created and/or hide 
+                   frames.  This procedure is usually called when
+                   we are ready to "clean-up" after running.
+    ------------------------------------------------------------------------------*/
+    /* Hide all frames. */
+    HIDE FRAME Dialog-Frame.
 END PROCEDURE.
 
 /* _UIB-CODE-BLOCK-END */
@@ -534,21 +533,21 @@ PROCEDURE enable_UI :
                Settings" section of the widget Property Sheets.
 ------------------------------------------------------------------------------*/
 
-  {&OPEN-QUERY-Dialog-Frame}
-  GET FIRST Dialog-Frame.
-  IF AVAILABLE ttCustomerUpd THEN 
-    DISPLAY ttCustomerUpd.CustNum ttCustomerUpd.Name ttCustomerUpd.Address 
-          ttCustomerUpd.PostalCode ttCustomerUpd.City ttCustomerUpd.State 
-          ttCustomerUpd.Country ttCustomerUpd.Phone ttCustomerUpd.EmailAddress 
-          ttCustomerUpd.SalesRep 
-      WITH FRAME Dialog-Frame.
-  ENABLE ttCustomerUpd.Name ttCustomerUpd.Address ttCustomerUpd.PostalCode 
-         ttCustomerUpd.City ttCustomerUpd.State ttCustomerUpd.Country 
-         ttCustomerUpd.Phone ttCustomerUpd.EmailAddress ttCustomerUpd.SalesRep 
-         Btn_Save Btn_Cancel 
-      WITH FRAME Dialog-Frame.
-  VIEW FRAME Dialog-Frame.
-  {&OPEN-BROWSERS-IN-QUERY-Dialog-Frame}
+    {&OPEN-QUERY-Dialog-Frame}
+    GET FIRST Dialog-Frame.
+    IF AVAILABLE ttCustomerUpd THEN 
+        DISPLAY ttCustomerUpd.CustNum ttCustomerUpd.Name ttCustomerUpd.Address 
+            ttCustomerUpd.PostalCode ttCustomerUpd.City ttCustomerUpd.State 
+            ttCustomerUpd.Country ttCustomerUpd.Phone ttCustomerUpd.EmailAddress 
+            ttCustomerUpd.SalesRep 
+            WITH FRAME Dialog-Frame.
+    ENABLE ttCustomerUpd.Name ttCustomerUpd.Address ttCustomerUpd.PostalCode 
+        ttCustomerUpd.City ttCustomerUpd.State ttCustomerUpd.Country 
+        ttCustomerUpd.Phone ttCustomerUpd.EmailAddress ttCustomerUpd.SalesRep 
+        Btn_Save Btn_Cancel 
+        WITH FRAME Dialog-Frame.
+    VIEW FRAME Dialog-Frame.
+    {&OPEN-BROWSERS-IN-QUERY-Dialog-Frame}
 END PROCEDURE.
 
 /* _UIB-CODE-BLOCK-END */
@@ -556,11 +555,11 @@ END PROCEDURE.
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE InitializeObjects Dialog-Frame 
 PROCEDURE InitializeObjects :
-/*------------------------------------------------------------------------------
-                          Purpose:     
-                          Parameters:  <none>
-                          Notes:       
-                        ------------------------------------------------------------------------------*/
+    /*------------------------------------------------------------------------------
+                              Purpose:     
+                              Parameters:  <none>
+                              Notes:       
+                            ------------------------------------------------------------------------------*/
     ghDataUtil = DYNAMIC-FUNCTION('RunPersistent' IN phProcLib, "DataUtil.p":U).
     DO WITH FRAME {&FRAME-NAME}:
         ttCustomerUpd.SalesRep:DELIMITER = ";":U.
