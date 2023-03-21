@@ -276,7 +276,7 @@ DO ON ERROR   UNDO MAIN-BLOCK, LEAVE MAIN-BLOCK
     SUBSCRIBE TO "ValueChangedbrCustomers":U    IN SOURCE-PROCEDURE.
     SUBSCRIBE TO "CustomerDetailsChanged":U     ANYWHERE.
     SUBSCRIBE TO "FetchCurrentCust":U           ANYWHERE.
-    SUBSCRIBE TO "CloseWindows":U               ANYWHERE.
+    //SUBSCRIBE TO "CloseWindows":U               ANYWHERE.
     IF NOT THIS-PROCEDURE:PERSISTENT THEN
         WAIT-FOR CLOSE OF THIS-PROCEDURE.
 END.
