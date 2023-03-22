@@ -245,21 +245,21 @@ IF SESSION:DISPLAY-TYPE = "GUI":U THEN
   CREATE WINDOW C-Win ASSIGN
          HIDDEN             = YES
          TITLE              = "Customers"
-         HEIGHT             = 13.71
+         HEIGHT             = 14.19
          WIDTH              = 101.8
          MAX-HEIGHT         = 48.43
          MAX-WIDTH          = 384
          VIRTUAL-HEIGHT     = 48.43
          VIRTUAL-WIDTH      = 384
-         RESIZE             = yes
-         SCROLL-BARS        = no
-         STATUS-AREA        = no
+         RESIZE             = YES
+         SCROLL-BARS        = NO
+         STATUS-AREA        = NO
          BGCOLOR            = ?
          FGCOLOR            = ?
-         KEEP-FRAME-Z-ORDER = yes
-         THREE-D            = yes
-         MESSAGE-AREA       = no
-         SENSITIVE          = yes.
+         KEEP-FRAME-Z-ORDER = YES
+         THREE-D            = YES
+         MESSAGE-AREA       = NO
+         SENSITIVE          = YES.
 ELSE {&WINDOW-NAME} = CURRENT-WINDOW.
 
 ASSIGN {&WINDOW-NAME}:MENUBAR    = MENU MENU-BAR-C-Win:HANDLE.
@@ -289,7 +289,7 @@ ASSIGN
 /* SETTINGS FOR FILL-IN fiRepName IN FRAME DEFAULT-FRAME
    NO-ENABLE                                                            */
 IF SESSION:DISPLAY-TYPE = "GUI":U AND VALID-HANDLE(C-Win)
-THEN C-Win:HIDDEN = no.
+THEN C-Win:HIDDEN = NO.
 
 /* _RUN-TIME-ATTRIBUTES-END */
 &ANALYZE-RESUME
@@ -442,6 +442,7 @@ DO:
 ON VALUE-CHANGED OF fiCustName IN FRAME DEFAULT-FRAME
 DO:
     // add code so that fiComments and fiCustNum search stay active too.
+    giCustNum = INTEGER(fiCustNum:SCREEN-VALUE).
     IF giCustNum = 0 THEN 
     DO:
         IF (fiCustName:SCREEN-VALUE = "") THEN 
@@ -462,7 +463,8 @@ DO:
             RUN ReopenQuery.
         END.
         ELSE 
-            gcWhereClause = "WHERE " + SUBSTITUTE("ttCustomer.Name BEGINS ~"&1~" ":U,fiCustName:SCREEN-VALUE) + "AND " + SUBSTITUTE("ttCustomer.CustNum >= ~"&1~" ":U,giCustNum) .
+            gcWhereClause = "WHERE " + SUBSTITUTE("ttCustomer.Name BEGINS ~"&1~" ":U,fiCustName:SCREEN-VALUE) + 
+                            "AND " + SUBSTITUTE("ttCustomer.CustNum >= ~"&1~" ":U,giCustNum) .
         RUN ReopenQuery.
     END.        
             
@@ -498,7 +500,8 @@ DO:
                 RUN ReopenQuery.
             END.
             ELSE 
-                gcWhereClause = "WHERE " + SUBSTITUTE("ttCustomer.CustNum >= ~"&1~" ":U,giCustNum) + "AND " + SUBSTITUTE("ttCustomer.Name BEGINS ~"&1~" ":U,fiCustName:SCREEN-VALUE) .
+                gcWhereClause = "WHERE " + SUBSTITUTE("ttCustomer.CustNum >= ~"&1~" ":U,giCustNum) + 
+                                "AND " + SUBSTITUTE("ttCustomer.Name BEGINS ~"&1~" ":U,fiCustName:SCREEN-VALUE) .
             RUN ReopenQuery.    
         END.     
     END.
