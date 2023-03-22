@@ -61,6 +61,7 @@ DEFINE VARIABLE hOrders       AS HANDLE    NO-UNDO.
 DEFINE VARIABLE gcWhereClause AS CHARACTER NO-UNDO.
 DEFINE VARIABLE gcSortClause  AS CHARACTER NO-UNDO.
 
+DEFINE VARIABLE iInputValue AS INTEGER NO-UNDO.
 
 DEFINE TEMP-TABLE ttCustomerUpd NO-UNDO LIKE ttCustomer.
 
@@ -244,21 +245,21 @@ IF SESSION:DISPLAY-TYPE = "GUI":U THEN
   CREATE WINDOW C-Win ASSIGN
          HIDDEN             = YES
          TITLE              = "Customers"
-         HEIGHT             = 14.48
+         HEIGHT             = 14.14
          WIDTH              = 101.8
          MAX-HEIGHT         = 48.43
          MAX-WIDTH          = 384
          VIRTUAL-HEIGHT     = 48.43
          VIRTUAL-WIDTH      = 384
-         RESIZE             = YES
-         SCROLL-BARS        = NO
-         STATUS-AREA        = NO
+         RESIZE             = yes
+         SCROLL-BARS        = no
+         STATUS-AREA        = no
          BGCOLOR            = ?
          FGCOLOR            = ?
-         KEEP-FRAME-Z-ORDER = YES
-         THREE-D            = YES
-         MESSAGE-AREA       = NO
-         SENSITIVE          = YES.
+         KEEP-FRAME-Z-ORDER = yes
+         THREE-D            = yes
+         MESSAGE-AREA       = no
+         SENSITIVE          = yes.
 ELSE {&WINDOW-NAME} = CURRENT-WINDOW.
 
 ASSIGN {&WINDOW-NAME}:MENUBAR    = MENU MENU-BAR-C-Win:HANDLE.
@@ -288,7 +289,7 @@ ASSIGN
 /* SETTINGS FOR FILL-IN fiRepName IN FRAME DEFAULT-FRAME
    NO-ENABLE                                                            */
 IF SESSION:DISPLAY-TYPE = "GUI":U AND VALID-HANDLE(C-Win)
-THEN C-Win:HIDDEN = NO.
+THEN C-Win:HIDDEN = no.
 
 /* _RUN-TIME-ATTRIBUTES-END */
 &ANALYZE-RESUME
@@ -441,6 +442,8 @@ DO:
 ON VALUE-CHANGED OF fiCustName IN FRAME DEFAULT-FRAME
 DO:
     // add code so that fiComments and fiCustNum search stay active too.
+    IF iInputValue = 0 THEN 
+    DO:
         IF (fiCustName:SCREEN-VALUE = "") THEN 
         DO:
             gcWhereClause = "".
@@ -448,7 +451,21 @@ DO:
         END.
         ELSE 
             gcWhereClause = "WHERE " + SUBSTITUTE("ttCustomer.Name BEGINS ~"&1~" ":U,fiCustName:SCREEN-VALUE).
-        RUN ReopenQuery.    
+        RUN ReopenQuery.
+    END.    
+    
+    IF iInputValue <> 0 THEN 
+    DO:
+        IF (fiCustName:SCREEN-VALUE = "") THEN 
+        DO:
+            gcWhereClause = "".
+            RUN ReopenQuery.
+        END.
+        ELSE 
+            gcWhereClause = "WHERE " + SUBSTITUTE("ttCustomer.Name BEGINS ~"&1~" ":U,fiCustName:SCREEN-VALUE) + "AND " + SUBSTITUTE("ttCustomer.CustNum >= ~"&1~" ":U,iInputValue) .
+        RUN ReopenQuery.
+    END.        
+            
     END.
 
 /* _UIB-CODE-BLOCK-END */
@@ -459,15 +476,32 @@ DO:
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL fiCustNum C-Win
 ON VALUE-CHANGED OF fiCustNum IN FRAME DEFAULT-FRAME
 DO:
-    // add code so that fiComments and fiName search stay active too.
-        IF INTEGER(fiCustNum:SCREEN-VALUE) = 0 THEN 
+       // DEFINE VARIABLE iInputValue AS INTEGER NO-UNDO.
+        iInputValue = INTEGER(fiCustNum:SCREEN-VALUE).
+        
+        IF fiCustName:SCREEN-VALUE = "" THEN 
         DO:
-            gcWhereClause = "".
+            IF iInputValue = 0 THEN 
+            DO:
+                gcWhereClause = "".
+                RUN ReopenQuery.
+            END.
+            ELSE 
+                gcWhereClause = "WHERE " + SUBSTITUTE("ttCustomer.CustNum >= ~"&1~" ":U,iInputValue).
             RUN ReopenQuery.
-        END.
-        ELSE 
-            gcWhereClause = "WHERE " + SUBSTITUTE("ttCustomer.CustNum >= ~"&1~" ":U,INTEGER(fiCustNum:SCREEN-VALUE)).
-        RUN ReopenQuery.      
+        END. 
+        
+        IF fiCustName:SCREEN-VALUE <> "" THEN 
+        DO:
+            IF iInputValue = 0 THEN 
+            DO:
+                gcWhereClause = "".
+                RUN ReopenQuery.
+            END.
+            ELSE 
+                gcWhereClause = "WHERE " + SUBSTITUTE("ttCustomer.CustNum >= ~"&1~" ":U,iInputValue) + "AND " + SUBSTITUTE("ttCustomer.Name BEGINS ~"&1~" ":U,fiCustName:SCREEN-VALUE) .
+            RUN ReopenQuery.    
+        END.     
     END.
 
 /* _UIB-CODE-BLOCK-END */
@@ -653,10 +687,10 @@ END.
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE CustomerDetailsChanged C-Win 
 PROCEDURE CustomerDetailsChanged :
 /*------------------------------------------------------------------------------
-        Purpose:     
-        Parameters:  <none>
-        Notes:       
-        ------------------------------------------------------------------------------*/
+            Purpose:     
+            Parameters:  <none>
+            Notes:       
+            ------------------------------------------------------------------------------*/
     DEFINE INPUT PARAMETER piCustNum AS INTEGER NO-UNDO.
     DEFINE INPUT PARAMETER pcCustDetailsChanged AS CHARACTER NO-UNDO.
 
@@ -680,10 +714,10 @@ END PROCEDURE.
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE DeleteCustomer C-Win 
 PROCEDURE DeleteCustomer :
 /*------------------------------------------------------------------------------
-        Purpose:     
-        Parameters:  <none>
-        Notes:       
-        ------------------------------------------------------------------------------*/
+            Purpose:     
+            Parameters:  <none>
+            Notes:       
+            ------------------------------------------------------------------------------*/
     DEFINE VARIABLE glResponse AS LOGICAL NO-UNDO.
 
     MESSAGE "Are you sure you want to delete this customer?":U 
@@ -731,9 +765,9 @@ END PROCEDURE.
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE EditCustomer C-Win 
 PROCEDURE EditCustomer :
 /*------------------------------------------------------------------------------
-        Purpose:
-        Notes: EXCLUSIVE LOCK?
-        ------------------------------------------------------------------------------*/
+            Purpose:
+            Notes: EXCLUSIVE LOCK?
+            ------------------------------------------------------------------------------*/
     DEFINE VARIABLE rowRowIdent AS ROWID NO-UNDO.
     
     RUN gMaintenance.w (INPUT "Mod":U,
@@ -742,9 +776,7 @@ PROCEDURE EditCustomer :
         OUTPUT TABLE ttCustomerUpd). 
         
     FIND FIRST ttCustomerUpd.
-    
     rowRowIdent = ttCustomerUpd.rowIdent.
-    
     BUFFER-COPY ttCustomerUpd TO ttCustomer.
     
     RUN ReopenQuery.
@@ -782,10 +814,10 @@ END PROCEDURE.
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE InitializeObjects C-Win 
 PROCEDURE InitializeObjects :
 /*------------------------------------------------------------------------------
-        Purpose:     
-        Parameters:  <none>
-        Notes:       
-        ------------------------------------------------------------------------------*/
+            Purpose:     
+            Parameters:  <none>
+            Notes:       
+            ------------------------------------------------------------------------------*/
     RUN PersistentProc.p PERSISTENT SET ghProcLib.
 
     ghDataUtil = DYNAMIC-FUNCTION('RunPersistent' IN ghProcLib, "DataUtil.p":U).
@@ -805,9 +837,9 @@ END PROCEDURE.
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE NewCustomer C-Win 
 PROCEDURE NewCustomer :
 /*------------------------------------------------------------------------------
-        Purpose:
-        Notes:
-        ------------------------------------------------------------------------------*/
+            Purpose:
+            Notes:
+            ------------------------------------------------------------------------------*/
     DEFINE VARIABLE rowRowIdent AS ROWID NO-UNDO.
     
     RUN gMaintenance.w (INPUT "New":U,
@@ -820,9 +852,6 @@ PROCEDURE NewCustomer :
         rowRowIdent = ttCustomerUpd.rowIdent.
         CREATE ttCustomer.
         BUFFER-COPY ttCustomerUpd TO ttCustomer.
-        
-        // This part of the code will reposition to new created customer, also when you pressed cancel.
-        // Cancel button should not create cust with custnum 0. 
         RUN ReopenQuery.
         FIND ttCustomer WHERE ttCustomer.rowIdent = rowRowIdent.
         REPOSITION brCustomer TO ROWID ROWID(ttCustomer).
@@ -836,9 +865,9 @@ END PROCEDURE.
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE ReopenQuery C-Win 
 PROCEDURE ReopenQuery :
 /*------------------------------------------------------------------------------
-        Purpose:
-        Notes:
-         ------------------------------------------------------------------------------*/
+            Purpose:
+            Notes:
+             ------------------------------------------------------------------------------*/
     QUERY brCustomer:QUERY-PREPARE(
         SUBSTITUTE("FOR EACH ttCustomer NO-LOCK &1 &2":U, gcSortClause, gcWhereClause)).
     QUERY brCustomer:QUERY-OPEN().
@@ -851,9 +880,9 @@ END PROCEDURE.
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE SwitchNavButtons C-Win 
 PROCEDURE SwitchNavButtons :
 /*------------------------------------------------------------------------------
-        Purpose:
-        Notes:
-        ------------------------------------------------------------------------------*/
+            Purpose:
+            Notes:
+            ------------------------------------------------------------------------------*/
     DEFINE VARIABLE iCurrentRow AS INTEGER NO-UNDO.
     DEFINE VARIABLE iLastRow    AS INTEGER NO-UNDO.
 
