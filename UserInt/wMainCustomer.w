@@ -61,7 +61,7 @@ DEFINE VARIABLE hOrders       AS HANDLE    NO-UNDO.
 DEFINE VARIABLE gcWhereClause AS CHARACTER NO-UNDO.
 DEFINE VARIABLE gcSortClause  AS CHARACTER NO-UNDO.
 
-DEFINE VARIABLE iInputValue AS INTEGER NO-UNDO.
+DEFINE VARIABLE giCustNum AS INTEGER NO-UNDO.
 
 DEFINE TEMP-TABLE ttCustomerUpd NO-UNDO LIKE ttCustomer.
 
@@ -171,7 +171,7 @@ DEFINE VARIABLE fiOrders AS INTEGER FORMAT "->,>>>,>>9":U INITIAL 0
 DEFINE VARIABLE fiRepName AS CHARACTER FORMAT "X(256)":U 
      LABEL "Rep Name" 
      VIEW-AS FILL-IN 
-     SIZE 20 BY 1 NO-UNDO.
+     SIZE 25 BY 1 NO-UNDO.
 
 DEFINE RECTANGLE RECT-1
      EDGE-PIXELS 2 GRAPHIC-EDGE  NO-FILL   
@@ -245,7 +245,7 @@ IF SESSION:DISPLAY-TYPE = "GUI":U THEN
   CREATE WINDOW C-Win ASSIGN
          HIDDEN             = YES
          TITLE              = "Customers"
-         HEIGHT             = 14.14
+         HEIGHT             = 13.71
          WIDTH              = 101.8
          MAX-HEIGHT         = 48.43
          MAX-WIDTH          = 384
@@ -442,7 +442,7 @@ DO:
 ON VALUE-CHANGED OF fiCustName IN FRAME DEFAULT-FRAME
 DO:
     // add code so that fiComments and fiCustNum search stay active too.
-    IF iInputValue = 0 THEN 
+    IF giCustNum = 0 THEN 
     DO:
         IF (fiCustName:SCREEN-VALUE = "") THEN 
         DO:
@@ -454,7 +454,7 @@ DO:
         RUN ReopenQuery.
     END.    
     
-    IF iInputValue <> 0 THEN 
+    IF giCustNum <> 0 THEN 
     DO:
         IF (fiCustName:SCREEN-VALUE = "") THEN 
         DO:
@@ -462,7 +462,7 @@ DO:
             RUN ReopenQuery.
         END.
         ELSE 
-            gcWhereClause = "WHERE " + SUBSTITUTE("ttCustomer.Name BEGINS ~"&1~" ":U,fiCustName:SCREEN-VALUE) + "AND " + SUBSTITUTE("ttCustomer.CustNum >= ~"&1~" ":U,iInputValue) .
+            gcWhereClause = "WHERE " + SUBSTITUTE("ttCustomer.Name BEGINS ~"&1~" ":U,fiCustName:SCREEN-VALUE) + "AND " + SUBSTITUTE("ttCustomer.CustNum >= ~"&1~" ":U,giCustNum) .
         RUN ReopenQuery.
     END.        
             
@@ -476,30 +476,29 @@ DO:
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL fiCustNum C-Win
 ON VALUE-CHANGED OF fiCustNum IN FRAME DEFAULT-FRAME
 DO:
-       // DEFINE VARIABLE iInputValue AS INTEGER NO-UNDO.
-        iInputValue = INTEGER(fiCustNum:SCREEN-VALUE).
+    giCustNum = INTEGER(fiCustNum:SCREEN-VALUE).
         
         IF fiCustName:SCREEN-VALUE = "" THEN 
         DO:
-            IF iInputValue = 0 THEN 
+            IF giCustNum = 0 THEN 
             DO:
                 gcWhereClause = "".
                 RUN ReopenQuery.
             END.
             ELSE 
-                gcWhereClause = "WHERE " + SUBSTITUTE("ttCustomer.CustNum >= ~"&1~" ":U,iInputValue).
+                gcWhereClause = "WHERE " + SUBSTITUTE("ttCustomer.CustNum >= ~"&1~" ":U,giCustNum).
             RUN ReopenQuery.
         END. 
         
         IF fiCustName:SCREEN-VALUE <> "" THEN 
         DO:
-            IF iInputValue = 0 THEN 
+            IF giCustNum = 0 THEN 
             DO:
                 gcWhereClause = "".
                 RUN ReopenQuery.
             END.
             ELSE 
-                gcWhereClause = "WHERE " + SUBSTITUTE("ttCustomer.CustNum >= ~"&1~" ":U,iInputValue) + "AND " + SUBSTITUTE("ttCustomer.Name BEGINS ~"&1~" ":U,fiCustName:SCREEN-VALUE) .
+                gcWhereClause = "WHERE " + SUBSTITUTE("ttCustomer.CustNum >= ~"&1~" ":U,giCustNum) + "AND " + SUBSTITUTE("ttCustomer.Name BEGINS ~"&1~" ":U,fiCustName:SCREEN-VALUE) .
             RUN ReopenQuery.    
         END.     
     END.
