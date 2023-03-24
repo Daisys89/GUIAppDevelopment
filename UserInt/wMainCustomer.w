@@ -9,6 +9,7 @@
 /* Temp-Table and Buffer definitions                                    */
 DEFINE TEMP-TABLE ttCustomer NO-UNDO LIKE Customer
        FIELD RowIdent AS ROWID
+       FIELD NumOrders AS INTEGER
        INDEX RowIdent RowIdent.
 DEFINE TEMP-TABLE ttOrder NO-UNDO LIKE Order
        FIELD RowIdent AS ROWID.
@@ -87,7 +88,7 @@ DEFINE TEMP-TABLE ttCustomerUpd NO-UNDO LIKE ttCustomer.
 
 /* Definitions for BROWSE brCustomer                                    */
 &Scoped-define FIELDS-IN-QUERY-brCustomer ttCustomer.CustNum ~
-ttCustomer.Name GetNumOrders() 
+ttCustomer.Name NumOrders 
 &Scoped-define ENABLED-FIELDS-IN-QUERY-brCustomer 
 &Scoped-define QUERY-STRING-brCustomer FOR EACH ttCustomer NO-LOCK
 &Scoped-define OPEN-QUERY-brCustomer OPEN QUERY brCustomer FOR EACH ttCustomer NO-LOCK.
@@ -112,13 +113,6 @@ ttCustomer.Name GetNumOrders()
 
 /* ************************  Function Prototypes ********************** */
 
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION-FORWARD GetNumOrders C-Win 
-FUNCTION GetNumOrders RETURNS INTEGER PRIVATE
-  ( /* parameter-definitions */ )  FORWARD.
-
-/* _UIB-CODE-BLOCK-END */
-&ANALYZE-RESUME
-
 
 /* ***********************  Control Definitions  ********************** */
 
@@ -142,7 +136,7 @@ DEFINE SUB-MENU m_Navigate
 DEFINE SUB-MENU m_Sort_By 
        MENU-ITEM m_Cust_Num     LABEL "Cust Num"      
        MENU-ITEM m_Name         LABEL "Name"          
-       MENU-ITEM m_Orders       LABEL "Orders"        .
+       MENU-ITEM m_NumOrders    LABEL "NumOrders"     .
 
 DEFINE MENU MENU-BAR-C-Win MENUBAR
        SUB-MENU  m_Customer     LABEL "Customer"      
@@ -162,7 +156,7 @@ DEFINE BUTTON btnOrders
 
 DEFINE VARIABLE fiCustName AS CHARACTER FORMAT "X(256)":U 
      VIEW-AS FILL-IN 
-     SIZE 41 BY 1 NO-UNDO.
+     SIZE 55 BY 1 NO-UNDO.
 
 DEFINE VARIABLE fiCustNum AS CHARACTER FORMAT "X(256)":U 
      VIEW-AS FILL-IN 
@@ -184,11 +178,11 @@ DEFINE BROWSE brCustomer
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _DISPLAY-FIELDS brCustomer C-Win _STRUCTURED
   QUERY brCustomer NO-LOCK DISPLAY
       ttCustomer.CustNum FORMAT ">>>>9":U WIDTH 11.4
-      ttCustomer.Name FORMAT "x(30)":U WIDTH 40.2
-      GetNumOrders() COLUMN-LABEL "Orders"
+      ttCustomer.Name FORMAT "x(30)":U WIDTH 54.2
+      NumOrders COLUMN-LABEL "NumOrders"
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
-    WITH NO-ROW-MARKERS SEPARATORS SIZE 69.2 BY 8.33 FIT-LAST-COLUMN.
+    WITH NO-ROW-MARKERS SEPARATORS SIZE 86.2 BY 8.33 FIT-LAST-COLUMN.
 
 
 /* ************************  Frame Definitions  *********************** */
@@ -197,8 +191,8 @@ DEFINE FRAME DEFAULT-FRAME
      brCustomer AT ROW 1.43 COL 2.8 WIDGET-ID 200
      fiCustNum AT ROW 9.81 COL 2.8 NO-LABEL WIDGET-ID 2
      fiCustName AT ROW 9.81 COL 15.4 NO-LABEL WIDGET-ID 4
-     btnOrders AT ROW 11.62 COL 56 WIDGET-ID 12
-     fiRepName AT ROW 11.71 COL 15 COLON-ALIGNED WIDGET-ID 70
+     fiRepName AT ROW 11.48 COL 15 COLON-ALIGNED WIDGET-ID 70
+     btnOrders AT ROW 11.48 COL 71 WIDGET-ID 12
     WITH 1 DOWN NO-BOX KEEP-TAB-ORDER OVERLAY 
          SIDE-LABELS NO-UNDERLINE THREE-D 
          AT COL 2 ROW 1
@@ -216,6 +210,7 @@ DEFINE FRAME DEFAULT-FRAME
       TABLE: ttCustomer T "?" NO-UNDO sports2000 Customer
       ADDITIONAL-FIELDS:
           FIELD RowIdent AS ROWID
+          FIELD NumOrders AS INTEGER
           INDEX RowIdent RowIdent
       END-FIELDS.
       TABLE: ttOrder T "?" NO-UNDO sports2000 Order
@@ -238,8 +233,8 @@ IF SESSION:DISPLAY-TYPE = "GUI":U THEN
   CREATE WINDOW C-Win ASSIGN
          HIDDEN             = YES
          TITLE              = "Customers"
-         HEIGHT             = 12.38
-         WIDTH              = 74.6
+         HEIGHT             = 13.33
+         WIDTH              = 91.8
          MAX-HEIGHT         = 48.43
          MAX-WIDTH          = 384
          VIRTUAL-HEIGHT     = 48.43
@@ -295,9 +290,9 @@ THEN C-Win:HIDDEN = NO.
      _FldNameList[1]   > Temp-Tables.ttCustomer.CustNum
 "ttCustomer.CustNum" ? ? "integer" ? ? ? ? ? ? no ? no no "11.4" yes no no "U" "" "" "" "" "" "" 0 no 0 no no
      _FldNameList[2]   > Temp-Tables.ttCustomer.Name
-"ttCustomer.Name" ? ? "character" ? ? ? ? ? ? no ? no no "40.2" yes no no "U" "" "" "" "" "" "" 0 no 0 no no
+"ttCustomer.Name" ? ? "character" ? ? ? ? ? ? no ? no no "54.2" yes no no "U" "" "" "" "" "" "" 0 no 0 no no
      _FldNameList[3]   > "_<CALC>"
-"GetNumOrders()" "Orders" ? ? ? ? ? ? ? ? no ? no no ? yes no no "U" "" "" "" "" "" "" 0 no 0 no no
+"NumOrders" "NumOrders" ? ? ? ? ? ? ? ? no ? no no ? yes no no "U" "" "" "" "" "" "" 0 no 0 no no
      _Query            is OPENED
 */  /* BROWSE brCustomer */
 &ANALYZE-RESUME
@@ -366,6 +361,7 @@ ON START-SEARCH OF brCustomer IN FRAME DEFAULT-FRAME
 DO:
         // how to sort orders now its a result of a function?. 
         gcSortClause = "BY " + BROWSE brCustomer:CURRENT-COLUMN:NAME.
+        
         RUN ReopenQuery.
     END.
 
@@ -503,9 +499,9 @@ DO:
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL m_Cust_Num C-Win
 ON CHOOSE OF MENU-ITEM m_Cust_Num /* Cust Num */
 DO:
-        gcSortClause = "BY ttCustomer.CustNum".
-        RUN ReopenQuery.
-    END.
+  gcSortClause = "BY ttCustomer.CustNum".
+  RUN ReopenQuery.
+END.
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
@@ -559,10 +555,10 @@ DO:
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL m_First C-Win
 ON CHOOSE OF MENU-ITEM m_First /* First */
 DO:
-        APPLY "HOME" TO BROWSE {&BROWSE-NAME}.
-        APPLY "VALUE-CHANGED" TO brCustomer IN FRAME {&FRAME-NAME}.  
-        PUBLISH "FetchCurrentCust":U (ttCustomer.CustNum).      
-    END.
+    APPLY "HOME" TO BROWSE {&BROWSE-NAME}.
+    APPLY "VALUE-CHANGED" TO brCustomer IN FRAME {&FRAME-NAME}.
+    PUBLISH "FetchCurrentCust":U (ttCustomer.CustNum).
+END.
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
@@ -572,10 +568,10 @@ DO:
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL m_Last C-Win
 ON CHOOSE OF MENU-ITEM m_Last /* Last */
 DO:
-        APPLY "END" TO BROWSE {&BROWSE-NAME}.
-        APPLY "VALUE-CHANGED" TO brCustomer IN FRAME {&FRAME-NAME}.
-        PUBLISH "FetchCurrentCust":U (ttCustomer.CustNum).
-    END.
+    APPLY "END" TO BROWSE {&BROWSE-NAME}.
+    APPLY "VALUE-CHANGED" TO brCustomer IN FRAME {&FRAME-NAME}.
+    PUBLISH "FetchCurrentCust":U (ttCustomer.CustNum).
+END.
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
@@ -585,9 +581,9 @@ DO:
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL m_Name C-Win
 ON CHOOSE OF MENU-ITEM m_Name /* Name */
 DO:
-        gcSortClause = "BY ttCustomer.Name".
-        RUN ReopenQuery.
-    END.
+  gcSortClause = "BY ttCustomer.Name".
+  RUN ReopenQuery.
+END.
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
@@ -604,13 +600,13 @@ DO:
 &ANALYZE-RESUME
 
 
-&Scoped-define SELF-NAME m_Orders
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL m_Orders C-Win
-ON CHOOSE OF MENU-ITEM m_Orders /* Orders */
+&Scoped-define SELF-NAME m_NumOrders
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL m_NumOrders C-Win
+ON CHOOSE OF MENU-ITEM m_NumOrders /* NumOrders */
 DO:
-       // how to sort orders now its a result of a function?.       
-         
-    END.
+    gcSortClause = "BY ttCustomer.NumOrders".
+    RUN ReopenQuery.
+END.
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
@@ -792,6 +788,8 @@ PROCEDURE InitializeObjects :
     ghDataUtil = DYNAMIC-FUNCTION('RunPersistent' IN ghProcLib, "DataUtil.p":U).
  
     RUN GetCustData IN ghDataUtil (OUTPUT TABLE ttCustomer).
+    
+    // Only load if you click on customer record. better to add to value-changed?
     RUN GetOrderData IN ghDataUtil (OUTPUT TABLE ttOrder).
  
     brCustomer:LOAD-MOUSE-POINTER("Glove":U) IN FRAME {&FRAME-NAME}.
@@ -877,24 +875,4 @@ END PROCEDURE.
 &ANALYZE-RESUME
 
 /* ************************  Function Implementations ***************** */
-
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION GetNumOrders C-Win 
-FUNCTION GetNumOrders RETURNS INTEGER PRIVATE
-  ( /* parameter-definitions */ ) :
-/*------------------------------------------------------------------------------
-  Purpose:  
-    Notes:  
-------------------------------------------------------------------------------*/
-  DEFINE VARIABLE NumOrders AS INTEGER NO-UNDO.
-  
-  FOR EACH ttOrder WHERE ttOrder.CustNum = ttCustomer.CustNum:
-    NumOrders = NumOrders + 1.
-  END.
-  
-  RETURN NumOrders.   /* Function return value. */
-
-END FUNCTION.
-
-/* _UIB-CODE-BLOCK-END */
-&ANALYZE-RESUME
 
