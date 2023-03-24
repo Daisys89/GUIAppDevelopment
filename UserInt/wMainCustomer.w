@@ -61,6 +61,8 @@ DEFINE VARIABLE hOrders       AS HANDLE    NO-UNDO.
 DEFINE VARIABLE gcWhereClause AS CHARACTER NO-UNDO.
 DEFINE VARIABLE gcSortClause  AS CHARACTER NO-UNDO.
 
+
+
 DEFINE VARIABLE giCustNum     AS INTEGER   NO-UNDO.
 
 DEFINE TEMP-TABLE ttCustomerUpd NO-UNDO LIKE ttCustomer.
@@ -85,7 +87,7 @@ DEFINE TEMP-TABLE ttCustomerUpd NO-UNDO LIKE ttCustomer.
 
 /* Definitions for BROWSE brCustomer                                    */
 &Scoped-define FIELDS-IN-QUERY-brCustomer ttCustomer.CustNum ~
-ttCustomer.Name GetNumOrders() ttCustomer.Comments 
+ttCustomer.Name GetNumOrders() 
 &Scoped-define ENABLED-FIELDS-IN-QUERY-brCustomer 
 &Scoped-define QUERY-STRING-brCustomer FOR EACH ttCustomer NO-LOCK
 &Scoped-define OPEN-QUERY-brCustomer OPEN QUERY brCustomer FOR EACH ttCustomer NO-LOCK.
@@ -98,10 +100,8 @@ ttCustomer.Name GetNumOrders() ttCustomer.Comments
     ~{&OPEN-QUERY-brCustomer}
 
 /* Standard List Definitions                                            */
-&Scoped-Define ENABLED-OBJECTS RECT-1 brCustomer fiCustNum fiCustName ~
-fiComments btnOrders 
-&Scoped-Define DISPLAYED-OBJECTS fiCustNum fiCustName fiComments fiOrders ~
-fiRepName 
+&Scoped-Define ENABLED-OBJECTS brCustomer fiCustNum fiCustName btnOrders 
+&Scoped-Define DISPLAYED-OBJECTS fiCustNum fiCustName fiRepName 
 
 /* Custom List Definitions                                              */
 /* List-1,List-2,List-3,List-4,List-5,List-6                            */
@@ -142,7 +142,7 @@ DEFINE SUB-MENU m_Navigate
 DEFINE SUB-MENU m_Sort_By 
        MENU-ITEM m_Cust_Num     LABEL "Cust Num"      
        MENU-ITEM m_Name         LABEL "Name"          
-       MENU-ITEM m_Comments     LABEL "Comments"      .
+       MENU-ITEM m_Orders       LABEL "Orders"        .
 
 DEFINE MENU MENU-BAR-C-Win MENUBAR
        SUB-MENU  m_Customer     LABEL "Customer"      
@@ -160,31 +160,18 @@ DEFINE BUTTON btnOrders
      LABEL "Show orders" 
      SIZE 15 BY 1.14.
 
-DEFINE VARIABLE fiComments AS CHARACTER FORMAT "X(256)":U 
-     VIEW-AS FILL-IN 
-     SIZE 53.6 BY 1 NO-UNDO.
-
 DEFINE VARIABLE fiCustName AS CHARACTER FORMAT "X(256)":U 
      VIEW-AS FILL-IN 
-     SIZE 33 BY 1 NO-UNDO.
+     SIZE 41 BY 1 NO-UNDO.
 
 DEFINE VARIABLE fiCustNum AS CHARACTER FORMAT "X(256)":U 
      VIEW-AS FILL-IN 
-     SIZE 10.4 BY 1 NO-UNDO.
-
-DEFINE VARIABLE fiOrders AS INTEGER FORMAT "->,>>>,>>9":U INITIAL 0 
-     LABEL "Number of orders" 
-     VIEW-AS FILL-IN 
-     SIZE 4 BY 1 NO-UNDO.
+     SIZE 12.6 BY 1 NO-UNDO.
 
 DEFINE VARIABLE fiRepName AS CHARACTER FORMAT "X(256)":U 
      LABEL "Rep Name" 
      VIEW-AS FILL-IN 
      SIZE 25 BY 1 NO-UNDO.
-
-DEFINE RECTANGLE RECT-1
-     EDGE-PIXELS 2 GRAPHIC-EDGE  NO-FILL   
-     SIZE 30 BY 3.1.
 
 /* Query definitions                                                    */
 &ANALYZE-SUSPEND
@@ -196,13 +183,12 @@ DEFINE QUERY brCustomer FOR
 DEFINE BROWSE brCustomer
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _DISPLAY-FIELDS brCustomer C-Win _STRUCTURED
   QUERY brCustomer NO-LOCK DISPLAY
-      ttCustomer.CustNum FORMAT ">>>>9":U
-      ttCustomer.Name FORMAT "x(30)":U WIDTH 23.4
-      GetNumOrders() COLUMN-LABEL "NumOrders" WIDTH 12.4
-      ttCustomer.Comments FORMAT "x(80)":U
+      ttCustomer.CustNum FORMAT ">>>>9":U WIDTH 11.4
+      ttCustomer.Name FORMAT "x(30)":U WIDTH 40.2
+      GetNumOrders() COLUMN-LABEL "Orders"
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
-    WITH NO-ROW-MARKERS SEPARATORS SIZE 98.2 BY 8.33 FIT-LAST-COLUMN.
+    WITH NO-ROW-MARKERS SEPARATORS SIZE 69.2 BY 8.33 FIT-LAST-COLUMN.
 
 
 /* ************************  Frame Definitions  *********************** */
@@ -210,12 +196,9 @@ DEFINE BROWSE brCustomer
 DEFINE FRAME DEFAULT-FRAME
      brCustomer AT ROW 1.43 COL 2.8 WIDGET-ID 200
      fiCustNum AT ROW 9.81 COL 2.8 NO-LABEL WIDGET-ID 2
-     fiCustName AT ROW 9.81 COL 13.2 NO-LABEL WIDGET-ID 4
-     fiComments AT ROW 9.81 COL 44.2 COLON-ALIGNED NO-LABEL WIDGET-ID 6
-     fiOrders AT ROW 11.52 COL 85.2 COLON-ALIGNED WIDGET-ID 72
-     fiRepName AT ROW 12.29 COL 15 COLON-ALIGNED WIDGET-ID 70
-     btnOrders AT ROW 12.71 COL 72 WIDGET-ID 12
-     RECT-1 AT ROW 11.24 COL 65 WIDGET-ID 74
+     fiCustName AT ROW 9.81 COL 15.4 NO-LABEL WIDGET-ID 4
+     btnOrders AT ROW 11.62 COL 56 WIDGET-ID 12
+     fiRepName AT ROW 11.71 COL 15 COLON-ALIGNED WIDGET-ID 70
     WITH 1 DOWN NO-BOX KEEP-TAB-ORDER OVERLAY 
          SIDE-LABELS NO-UNDERLINE THREE-D 
          AT COL 2 ROW 1
@@ -255,21 +238,21 @@ IF SESSION:DISPLAY-TYPE = "GUI":U THEN
   CREATE WINDOW C-Win ASSIGN
          HIDDEN             = YES
          TITLE              = "Customers"
-         HEIGHT             = 13.62
-         WIDTH              = 101.4
+         HEIGHT             = 12.38
+         WIDTH              = 74.6
          MAX-HEIGHT         = 48.43
          MAX-WIDTH          = 384
          VIRTUAL-HEIGHT     = 48.43
          VIRTUAL-WIDTH      = 384
-         RESIZE             = yes
-         SCROLL-BARS        = no
-         STATUS-AREA        = no
+         RESIZE             = YES
+         SCROLL-BARS        = NO
+         STATUS-AREA        = NO
          BGCOLOR            = ?
          FGCOLOR            = ?
-         KEEP-FRAME-Z-ORDER = yes
-         THREE-D            = yes
-         MESSAGE-AREA       = no
-         SENSITIVE          = yes.
+         KEEP-FRAME-Z-ORDER = YES
+         THREE-D            = YES
+         MESSAGE-AREA       = NO
+         SENSITIVE          = YES.
 ELSE {&WINDOW-NAME} = CURRENT-WINDOW.
 
 ASSIGN {&WINDOW-NAME}:MENUBAR    = MENU MENU-BAR-C-Win:HANDLE.
@@ -285,7 +268,7 @@ ASSIGN {&WINDOW-NAME}:MENUBAR    = MENU MENU-BAR-C-Win:HANDLE.
   VISIBLE,,RUN-PERSISTENT                                               */
 /* SETTINGS FOR FRAME DEFAULT-FRAME
    FRAME-NAME                                                           */
-/* BROWSE-TAB brCustomer RECT-1 DEFAULT-FRAME */
+/* BROWSE-TAB brCustomer 1 DEFAULT-FRAME */
 ASSIGN 
        brCustomer:POPUP-MENU IN FRAME DEFAULT-FRAME             = MENU POPUP-MENU-brCustomer:HANDLE
        brCustomer:ALLOW-COLUMN-SEARCHING IN FRAME DEFAULT-FRAME = TRUE.
@@ -294,12 +277,10 @@ ASSIGN
    ALIGN-L                                                              */
 /* SETTINGS FOR FILL-IN fiCustNum IN FRAME DEFAULT-FRAME
    ALIGN-L                                                              */
-/* SETTINGS FOR FILL-IN fiOrders IN FRAME DEFAULT-FRAME
-   NO-ENABLE                                                            */
 /* SETTINGS FOR FILL-IN fiRepName IN FRAME DEFAULT-FRAME
    NO-ENABLE                                                            */
 IF SESSION:DISPLAY-TYPE = "GUI":U AND VALID-HANDLE(C-Win)
-THEN C-Win:HIDDEN = no.
+THEN C-Win:HIDDEN = NO.
 
 /* _RUN-TIME-ATTRIBUTES-END */
 &ANALYZE-RESUME
@@ -311,12 +292,12 @@ THEN C-Win:HIDDEN = no.
 /* Query rebuild information for BROWSE brCustomer
      _TblList          = "Temp-Tables.ttCustomer"
      _Options          = "NO-LOCK"
-     _FldNameList[1]   = Temp-Tables.ttCustomer.CustNum
+     _FldNameList[1]   > Temp-Tables.ttCustomer.CustNum
+"ttCustomer.CustNum" ? ? "integer" ? ? ? ? ? ? no ? no no "11.4" yes no no "U" "" "" "" "" "" "" 0 no 0 no no
      _FldNameList[2]   > Temp-Tables.ttCustomer.Name
-"ttCustomer.Name" ? ? "character" ? ? ? ? ? ? no ? no no "23.4" yes no no "U" "" "" "" "" "" "" 0 no 0 no no
+"ttCustomer.Name" ? ? "character" ? ? ? ? ? ? no ? no no "40.2" yes no no "U" "" "" "" "" "" "" 0 no 0 no no
      _FldNameList[3]   > "_<CALC>"
-"GetNumOrders()" "NumOrders" ? ? ? ? ? ? ? ? no ? no no "12.4" yes no no "U" "" "" "" "" "" "" 0 no 0 no no
-     _FldNameList[4]   = Temp-Tables.ttCustomer.Comments
+"GetNumOrders()" "Orders" ? ? ? ? ? ? ? ? no ? no no ? yes no no "U" "" "" "" "" "" "" 0 no 0 no no
      _Query            is OPENED
 */  /* BROWSE brCustomer */
 &ANALYZE-RESUME
@@ -361,7 +342,7 @@ ON DEFAULT-ACTION OF brCustomer IN FRAME DEFAULT-FRAME
 DO:
         IF NOT VALID-HANDLE(hDetails)
             THEN RUN wDetails.w PERSISTENT SET hDetails.   
-         
+        RUN "SwitchNavButtons". 
         PUBLISH "FetchCurrentCust":U (ttCustomer.CustNum).  
     END.
 
@@ -372,7 +353,7 @@ DO:
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL brCustomer C-Win
 ON ENTRY OF brCustomer IN FRAME DEFAULT-FRAME
 DO:
-        //This is to make sure order and rep data is shown when starting up the screen.
+        //This is to make sure salesrep data is shown when first opening up the screen.
         APPLY "VALUE-CHANGED":U TO brCustomer.  
     END.
 
@@ -383,6 +364,7 @@ DO:
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL brCustomer C-Win
 ON START-SEARCH OF brCustomer IN FRAME DEFAULT-FRAME
 DO:
+        // how to sort orders now its a result of a function?. 
         gcSortClause = "BY " + BROWSE brCustomer:CURRENT-COLUMN:NAME.
         RUN ReopenQuery.
     END.
@@ -393,17 +375,13 @@ DO:
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL brCustomer C-Win
 ON VALUE-CHANGED OF brCustomer IN FRAME DEFAULT-FRAME
-DO:     
-        fiOrders = 0.
-        FOR EACH ttOrder WHERE ttOrder.CustNum = ttCustomer.CustNum:
-            fiOrders = fiOrders + 1.    
-        END.    
+DO:         
         
         FOR EACH SalesRep WHERE Salesrep.SalesRep = ttCustomer.SalesRep:
             fiRepName = Salesrep.RepName.
         END.
         
-        DISPLAY fiRepName fiOrders WITH FRAME {&FRAME-NAME}.
+        DISPLAY fiRepName WITH FRAME {&FRAME-NAME}.
         
         RUN "SwitchNavButtons". 
         PUBLISH "ValueChangedbrCustomers":U (ttCustomer.CustNum). 
@@ -422,27 +400,6 @@ DO:
             THEN RUN wOrderOverview.w PERSISTENT SET hOrders.
         
         PUBLISH "FetchCurrentCust":U (ttCustomer.CustNum).
-    END.
-
-/* _UIB-CODE-BLOCK-END */
-&ANALYZE-RESUME
-
-
-&Scoped-define SELF-NAME fiComments
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL fiComments C-Win
-ON VALUE-CHANGED OF fiComments IN FRAME DEFAULT-FRAME
-DO:
-    // add code so that fiCustNum and fiName search stay active too.
-        IF (fiComments:SCREEN-VALUE = "") THEN 
-        DO:
-            gcWhereClause = "".
-            RUN ReopenQuery.
-        END.
-        ELSE 
-        DO:                   
-            gcWhereClause = "WHERE " + SUBSTITUTE("ttCustomer.Comments MATCHES ~"*&1*~" ":U,fiComments:SCREEN-VALUE).
-            RUN ReopenQuery.     
-        END.     
     END.
 
 /* _UIB-CODE-BLOCK-END */
@@ -536,18 +493,6 @@ DO:
 ON CHOOSE OF MENU-ITEM m_brEdit /* Edit */
 DO:
         RUN EditCustomer.
-    END.
-
-/* _UIB-CODE-BLOCK-END */
-&ANALYZE-RESUME
-
-
-&Scoped-define SELF-NAME m_Comments
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL m_Comments C-Win
-ON CHOOSE OF MENU-ITEM m_Comments /* Comments */
-DO:
-        gcSortClause = "BY ttCustomer.Comments".
-        RUN ReopenQuery.
     END.
 
 /* _UIB-CODE-BLOCK-END */
@@ -653,6 +598,18 @@ DO:
 ON CHOOSE OF MENU-ITEM m_New /* New */
 DO:
         RUN NewCustomer.
+    END.
+
+/* _UIB-CODE-BLOCK-END */
+&ANALYZE-RESUME
+
+
+&Scoped-define SELF-NAME m_Orders
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL m_Orders C-Win
+ON CHOOSE OF MENU-ITEM m_Orders /* Orders */
+DO:
+       // how to sort orders now its a result of a function?.       
+         
     END.
 
 /* _UIB-CODE-BLOCK-END */
@@ -812,9 +769,9 @@ PROCEDURE enable_UI :
                These statements here are based on the "Other 
                Settings" section of the widget Property Sheets.
 ------------------------------------------------------------------------------*/
-  DISPLAY fiCustNum fiCustName fiComments fiOrders fiRepName 
+  DISPLAY fiCustNum fiCustName fiRepName 
       WITH FRAME DEFAULT-FRAME IN WINDOW C-Win.
-  ENABLE RECT-1 brCustomer fiCustNum fiCustName fiComments btnOrders 
+  ENABLE brCustomer fiCustNum fiCustName btnOrders 
       WITH FRAME DEFAULT-FRAME IN WINDOW C-Win.
   {&OPEN-BROWSERS-IN-QUERY-DEFAULT-FRAME}
   VIEW C-Win.
@@ -880,9 +837,12 @@ PROCEDURE ReopenQuery :
     Purpose:
     Notes:
     ------------------------------------------------------------------------------*/
-    QUERY brCustomer:QUERY-PREPARE(
-        SUBSTITUTE("FOR EACH ttCustomer NO-LOCK &1 &2":U, gcSortClause, gcWhereClause)).
-    QUERY brCustomer:QUERY-OPEN().
+    DEFINE VARIABLE hQueryHandle  AS HANDLE    NO-UNDO.
+    
+    hQueryHandle = BROWSE brCustomer:QUERY.
+    hQueryHandle:QUERY-CLOSE ().
+    hQueryHandle:QUERY-PREPARE(SUBSTITUTE("FOR EACH ttCustomer NO-LOCK &1 &2":U, gcSortClause, gcWhereClause)).
+    hQueryHandle:QUERY-OPEN().
 
 END PROCEDURE.
 
