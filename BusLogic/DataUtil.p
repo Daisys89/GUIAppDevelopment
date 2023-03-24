@@ -7,6 +7,7 @@
 /* Temp-Table and Buffer definitions                                    */
 DEFINE TEMP-TABLE ttCustomer NO-UNDO LIKE Sports2000.Customer
        FIELD RowIdent AS ROWID
+       FIELD Orders AS INTEGER
        INDEX RowIdent RowIdent.
 DEFINE TEMP-TABLE ttInvoice NO-UNDO LIKE Sports2000.Invoice
        FIELD RowIdent AS ROWID
@@ -134,25 +135,25 @@ SUBSCRIBE TO "Shutdown":U ANYWHERE.
 &IF DEFINED(EXCLUDE-DeleteCustomer) = 0 &THEN
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE DeleteCustomer Procedure 
-PROCEDURE DeleteCustomer :
+PROCEDURE DeleteCustomer :                                                      
 /*------------------------------------------------------------------------------
-  Purpose: Delete customer records from the database.    
-  Parameters:  prRowIdent - RowID of the record to be deleted.
-  Notes:       
+Purpose: Delete customer records from the database.                           
+Parameters:  prRowIdent - RowID of the record to be deleted.                  
+Notes:                                                                        
 ------------------------------------------------------------------------------*/
-    DEFINE INPUT PARAMETER prRowIdent AS ROWID NO-UNDO.
-    
-    FIND Customer WHERE ROWID(Customer) = prRowIdent EXCLUSIVE-LOCK NO-ERROR.
-    IF AVAILABLE Customer THEN 
-    DO:
-        DELETE Customer.
-        RETURN.
-    END.
-    ELSE IF LOCKED (Customer) THEN
-            RETURN "The record is locked.  Try later.".
-         ELSE
-            RETURN "The record has already been deleted!".
-END PROCEDURE.
+    DEFINE INPUT PARAMETER prRowIdent AS ROWID NO-UNDO.                         
+                                                                                
+    FIND Customer WHERE ROWID(Customer) = prRowIdent EXCLUSIVE-LOCK NO-ERROR.   
+    IF AVAILABLE Customer THEN                                                  
+    DO:                                                                         
+        DELETE Customer.                                                        
+        RETURN.                                                                 
+    END.                                                                        
+    ELSE IF LOCKED (Customer) THEN                                              
+            RETURN "The record is locked.  Try later.".                         
+         ELSE                                                                   
+            RETURN "The record has already been deleted!".                      
+END PROCEDURE.                                                                  
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
@@ -162,25 +163,25 @@ END PROCEDURE.
 &IF DEFINED(EXCLUDE-DeleteInvoice) = 0 &THEN
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE DeleteInvoice Procedure 
-PROCEDURE DeleteInvoice :
-/*------------------------------------------------------------------------------
-  Purpose: Delete invoice records from the database.    
-  Parameters:  prRowIdent - RowID of the record to be deleted.
-  Notes:       
-------------------------------------------------------------------------------*/
-    DEFINE INPUT PARAMETER prRowIdent AS ROWID NO-UNDO.
-    
-    FIND Invoice WHERE ROWID(Invoice) = prRowIdent EXCLUSIVE-LOCK NO-ERROR.
-    IF AVAILABLE Invoice THEN  
-    DO:
-        DELETE Invoice. 
-        RETURN RETURN-VALUE.
-    END.
-    ELSE IF LOCKED (Invoice) THEN
-            RETURN "The record is locked.  Try later.".
-         ELSE
-            RETURN "The record has already been deleted!".
-END PROCEDURE.
+/*PROCEDURE DeleteInvoice :                                                       */
+/*/*------------------------------------------------------------------------------*/
+/*  Purpose: Delete invoice records from the database.                            */
+/*  Parameters:  prRowIdent - RowID of the record to be deleted.                  */
+/*  Notes:                                                                        */
+/*------------------------------------------------------------------------------*/*/
+/*    DEFINE INPUT PARAMETER prRowIdent AS ROWID NO-UNDO.                         */
+/*                                                                                */
+/*    FIND Invoice WHERE ROWID(Invoice) = prRowIdent EXCLUSIVE-LOCK NO-ERROR.     */
+/*    IF AVAILABLE Invoice THEN                                                   */
+/*    DO:                                                                         */
+/*        DELETE Invoice.                                                         */
+/*        RETURN RETURN-VALUE.                                                    */
+/*    END.                                                                        */
+/*    ELSE IF LOCKED (Invoice) THEN                                               */
+/*            RETURN "The record is locked.  Try later.".                         */
+/*         ELSE                                                                   */
+/*            RETURN "The record has already been deleted!".                      */
+/*END PROCEDURE.                                                                  */
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
@@ -190,25 +191,25 @@ END PROCEDURE.
 &IF DEFINED(EXCLUDE-DeleteOrder) = 0 &THEN
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE DeleteOrder Procedure 
-PROCEDURE DeleteOrder :
-/*------------------------------------------------------------------------------
-  Purpose: Delete order records from the database.    
-  Parameters:  prRowIdent - RowID of the record to be deleted.
-  Notes:       
-------------------------------------------------------------------------------*/
-    DEFINE INPUT PARAMETER prRowIdent AS ROWID NO-UNDO.
-    
-    FIND Order WHERE ROWID(Order) = prRowIdent EXCLUSIVE-LOCK NO-ERROR.
-    IF AVAILABLE Order THEN  
-    DO:
-        DELETE Order.
-        RETURN.
-    END.
-    ELSE IF LOCKED (Order) THEN
-            RETURN "The record is locked.  Try later.".
-         ELSE
-            RETURN "The record has already been deleted!".
-END PROCEDURE.
+/*PROCEDURE DeleteOrder :                                                         */
+/*/*------------------------------------------------------------------------------*/
+/*  Purpose: Delete order records from the database.                              */
+/*  Parameters:  prRowIdent - RowID of the record to be deleted.                  */
+/*  Notes:                                                                        */
+/*------------------------------------------------------------------------------*/*/
+/*    DEFINE INPUT PARAMETER prRowIdent AS ROWID NO-UNDO.                         */
+/*                                                                                */
+/*    FIND Order WHERE ROWID(Order) = prRowIdent EXCLUSIVE-LOCK NO-ERROR.         */
+/*    IF AVAILABLE Order THEN                                                     */
+/*    DO:                                                                         */
+/*        DELETE Order.                                                           */
+/*        RETURN.                                                                 */
+/*    END.                                                                        */
+/*    ELSE IF LOCKED (Order) THEN                                                 */
+/*            RETURN "The record is locked.  Try later.".                         */
+/*         ELSE                                                                   */
+/*            RETURN "The record has already been deleted!".                      */
+/*END PROCEDURE.                                                                  */
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
@@ -218,25 +219,25 @@ END PROCEDURE.
 &IF DEFINED(EXCLUDE-DeleteOrderline) = 0 &THEN
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE DeleteOrderline Procedure 
-PROCEDURE DeleteOrderline :
-/*------------------------------------------------------------------------------
-  Purpose: Delete OrderLine records from the database.    
-  Parameters:  prRowIdent - RowID of the record to be deleted.
-  Notes:       
-------------------------------------------------------------------------------*/
-    DEFINE INPUT PARAMETER prRowIdent AS ROWID NO-UNDO.
-    
-    FIND OrderLine WHERE ROWID(OrderLine) = prRowIdent EXCLUSIVE-LOCK NO-ERROR.
-    IF AVAILABLE OrderLine THEN  
-    DO:
-        DELETE OrderLine.
-        RETURN.
-    END.
-    ELSE IF LOCKED (OrderLine) THEN
-            RETURN "The record is locked.  Try later.".
-         ELSE
-            RETURN "The record has already been deleted!".
-END PROCEDURE.
+/*PROCEDURE DeleteOrderline :                                                     */
+/*/*------------------------------------------------------------------------------*/
+/*  Purpose: Delete OrderLine records from the database.                          */
+/*  Parameters:  prRowIdent - RowID of the record to be deleted.                  */
+/*  Notes:                                                                        */
+/*------------------------------------------------------------------------------*/*/
+/*    DEFINE INPUT PARAMETER prRowIdent AS ROWID NO-UNDO.                         */
+/*                                                                                */
+/*    FIND OrderLine WHERE ROWID(OrderLine) = prRowIdent EXCLUSIVE-LOCK NO-ERROR. */
+/*    IF AVAILABLE OrderLine THEN                                                 */
+/*    DO:                                                                         */
+/*        DELETE OrderLine.                                                       */
+/*        RETURN.                                                                 */
+/*    END.                                                                        */
+/*    ELSE IF LOCKED (OrderLine) THEN                                             */
+/*            RETURN "The record is locked.  Try later.".                         */
+/*         ELSE                                                                   */
+/*            RETURN "The record has already been deleted!".                      */
+/*END PROCEDURE.                                                                  */
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
@@ -246,25 +247,25 @@ END PROCEDURE.
 &IF DEFINED(EXCLUDE-DeleteSalesrep) = 0 &THEN
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE DeleteSalesrep Procedure 
-PROCEDURE DeleteSalesrep :
-/*------------------------------------------------------------------------------
-  Purpose: Delete salesrep records from the database.    
-  Parameters:  prRowIdent - RowID of the record to be deleted.
-  Notes:       
-------------------------------------------------------------------------------*/
-    DEFINE INPUT PARAMETER prRowIdent AS ROWID NO-UNDO.
-    
-    FIND SalesRep WHERE ROWID(SalesRep) = prRowIdent EXCLUSIVE-LOCK NO-ERROR.
-    IF AVAILABLE SalesRep THEN  
-    DO:
-        DELETE SalesRep.
-        RETURN.
-    END.
-    ELSE IF LOCKED (SalesRep) THEN
-            RETURN "The record is locked.  Try later.".
-         ELSE
-            RETURN "The record has already been deleted!".
-END PROCEDURE.
+/*PROCEDURE DeleteSalesrep :                                                      */
+/*/*------------------------------------------------------------------------------*/
+/*  Purpose: Delete salesrep records from the database.                           */
+/*  Parameters:  prRowIdent - RowID of the record to be deleted.                  */
+/*  Notes:                                                                        */
+/*------------------------------------------------------------------------------*/*/
+/*    DEFINE INPUT PARAMETER prRowIdent AS ROWID NO-UNDO.                         */
+/*                                                                                */
+/*    FIND SalesRep WHERE ROWID(SalesRep) = prRowIdent EXCLUSIVE-LOCK NO-ERROR.   */
+/*    IF AVAILABLE SalesRep THEN                                                  */
+/*    DO:                                                                         */
+/*        DELETE SalesRep.                                                        */
+/*        RETURN.                                                                 */
+/*    END.                                                                        */
+/*    ELSE IF LOCKED (SalesRep) THEN                                              */
+/*            RETURN "The record is locked.  Try later.".                         */
+/*         ELSE                                                                   */
+/*            RETURN "The record has already been deleted!".                      */
+/*END PROCEDURE.                                                                  */
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
@@ -337,32 +338,32 @@ END PROCEDURE.
 &IF DEFINED(EXCLUDE-GetInvoiceData) = 0 &THEN
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE GetInvoiceData Procedure 
-PROCEDURE GetInvoiceData :
-/*------------------------------------------------------------------------------
-  Purpose: Retrieve all the invoice records and pass back to the calling 
-            procedure.    
-  Parameters:  ttInvoice - Temp-table used to pass records between procedures.
-               piKeyValue - The customer number for which invoices are required.
-  Notes:       
-------------------------------------------------------------------------------*/
-    DEFINE OUTPUT PARAMETER TABLE FOR ttInvoice.
-    DEFINE INPUT  PARAMETER piKeyValue  AS INTEGER    NO-UNDO.
-
-    EMPTY TEMP-TABLE ttInvoice NO-ERROR.
-    
-    IF piKeyValue = ? THEN
-        FOR EACH Invoice NO-LOCK: 
-            CREATE ttInvoice.
-            BUFFER-COPY Invoice TO ttInvoice.
-            ASSIGN ttInvoice.RowIdent = ROWID(Invoice).
-        END.
-    ELSE
-        FOR EACH Invoice WHERE Invoice.CustNum = piKeyValue NO-LOCK: 
-            CREATE ttInvoice.
-            BUFFER-COPY Invoice TO ttInvoice.
-            ASSIGN ttInvoice.RowIdent = ROWID(Invoice).
-        END.
-END PROCEDURE.
+/*PROCEDURE GetInvoiceData :                                                      */
+/*/*------------------------------------------------------------------------------*/
+/*  Purpose: Retrieve all the invoice records and pass back to the calling        */
+/*            procedure.                                                          */
+/*  Parameters:  ttInvoice - Temp-table used to pass records between procedures.  */
+/*               piKeyValue - The customer number for which invoices are required.*/
+/*  Notes:                                                                        */
+/*------------------------------------------------------------------------------*/*/
+/*    DEFINE OUTPUT PARAMETER TABLE FOR ttInvoice.                                */
+/*    DEFINE INPUT  PARAMETER piKeyValue  AS INTEGER    NO-UNDO.                  */
+/*                                                                                */
+/*    EMPTY TEMP-TABLE ttInvoice NO-ERROR.                                        */
+/*                                                                                */
+/*    IF piKeyValue = ? THEN                                                      */
+/*        FOR EACH Invoice NO-LOCK:                                               */
+/*            CREATE ttInvoice.                                                   */
+/*            BUFFER-COPY Invoice TO ttInvoice.                                   */
+/*            ASSIGN ttInvoice.RowIdent = ROWID(Invoice).                         */
+/*        END.                                                                    */
+/*    ELSE                                                                        */
+/*        FOR EACH Invoice WHERE Invoice.CustNum = piKeyValue NO-LOCK:            */
+/*            CREATE ttInvoice.                                                   */
+/*            BUFFER-COPY Invoice TO ttInvoice.                                   */
+/*            ASSIGN ttInvoice.RowIdent = ROWID(Invoice).                         */
+/*        END.                                                                    */
+/*END PROCEDURE.                                                                  */
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
@@ -372,34 +373,34 @@ END PROCEDURE.
 &IF DEFINED(EXCLUDE-GetInvoiceRecord) = 0 &THEN
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE GetInvoiceRecord Procedure 
-PROCEDURE GetInvoiceRecord :
-/*------------------------------------------------------------------------------
-  Purpose: Retrieve a specific invoice record and pass it back to the calling 
-            procedure.    
-  Parameters:  
-        ttInvoice - Temp-table used to pass record between procedures.
-        prowInvoiceRow - RowID of the record to retrieve.
-  Notes:       
-------------------------------------------------------------------------------*/
-  DEFINE OUTPUT PARAMETER TABLE FOR ttInvoice.
-  DEFINE INPUT  PARAMETER prInvoiceRow AS ROWID NO-UNDO.
-
-  EMPTY TEMP-TABLE ttInvoice NO-ERROR.
-
-  IF prInvoiceRow <> ? THEN
-      FIND Invoice WHERE ROWID(Invoice) = prInvoiceRow NO-LOCK NO-ERROR.
-  ELSE
-      FIND LAST Invoice NO-LOCK NO-ERROR.  
-  IF AVAILABLE Invoice THEN
-  DO:
-      CREATE ttInvoice.
-      BUFFER-COPY Invoice TO ttInvoice.
-      ASSIGN ttInvoice.RowIdent = ROWID(Invoice).
-      RETURN.
-  END.
-  ELSE
-      RETURN "Record has been deleted!".
-END PROCEDURE.
+/*PROCEDURE GetInvoiceRecord :                                                    */
+/*/*------------------------------------------------------------------------------*/
+/*  Purpose: Retrieve a specific invoice record and pass it back to the calling   */
+/*            procedure.                                                          */
+/*  Parameters:                                                                   */
+/*        ttInvoice - Temp-table used to pass record between procedures.          */
+/*        prowInvoiceRow - RowID of the record to retrieve.                       */
+/*  Notes:                                                                        */
+/*------------------------------------------------------------------------------*/*/
+/*  DEFINE OUTPUT PARAMETER TABLE FOR ttInvoice.                                  */
+/*  DEFINE INPUT  PARAMETER prInvoiceRow AS ROWID NO-UNDO.                        */
+/*                                                                                */
+/*  EMPTY TEMP-TABLE ttInvoice NO-ERROR.                                          */
+/*                                                                                */
+/*  IF prInvoiceRow <> ? THEN                                                     */
+/*      FIND Invoice WHERE ROWID(Invoice) = prInvoiceRow NO-LOCK NO-ERROR.        */
+/*  ELSE                                                                          */
+/*      FIND LAST Invoice NO-LOCK NO-ERROR.                                       */
+/*  IF AVAILABLE Invoice THEN                                                     */
+/*  DO:                                                                           */
+/*      CREATE ttInvoice.                                                         */
+/*      BUFFER-COPY Invoice TO ttInvoice.                                         */
+/*      ASSIGN ttInvoice.RowIdent = ROWID(Invoice).                               */
+/*      RETURN.                                                                   */
+/*  END.                                                                          */
+/*  ELSE                                                                          */
+/*      RETURN "Record has been deleted!".                                        */
+/*END PROCEDURE.                                                                  */
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
@@ -409,21 +410,21 @@ END PROCEDURE.
 &IF DEFINED(EXCLUDE-GetItemData) = 0 &THEN
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE GetItemData Procedure 
-PROCEDURE GetItemData :
-/*------------------------------------------------------------------------------
-  Purpose: Retrieve all the item records and pass back to the calling 
-            procedure.    
-  Parameters:  ttItem - Temp-table used to pass records between procedures.
-  Notes:       
-------------------------------------------------------------------------------*/
-    DEFINE OUTPUT PARAMETER TABLE FOR ttItem.
-
-    EMPTY TEMP-TABLE ttItem NO-ERROR.
-    FOR EACH Item NO-LOCK: 
-        CREATE ttItem.
-        BUFFER-COPY Item TO ttItem.
-    END.
-END PROCEDURE.
+/*PROCEDURE GetItemData :                                                         */
+/*/*------------------------------------------------------------------------------*/
+/*  Purpose: Retrieve all the item records and pass back to the calling           */
+/*            procedure.                                                          */
+/*  Parameters:  ttItem - Temp-table used to pass records between procedures.     */
+/*  Notes:                                                                        */
+/*------------------------------------------------------------------------------*/*/
+/*    DEFINE OUTPUT PARAMETER TABLE FOR ttItem.                                   */
+/*                                                                                */
+/*    EMPTY TEMP-TABLE ttItem NO-ERROR.                                           */
+/*    FOR EACH Item NO-LOCK:                                                      */
+/*        CREATE ttItem.                                                          */
+/*        BUFFER-COPY Item TO ttItem.                                             */
+/*    END.                                                                        */
+/*END PROCEDURE.                                                                  */
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
@@ -433,21 +434,21 @@ END PROCEDURE.
 &IF DEFINED(EXCLUDE-GetNewLineNum) = 0 &THEN
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE GetNewLineNum Procedure 
-PROCEDURE GetNewLineNum :
-/*------------------------------------------------------------------------------
-  Purpose: Compute line number for new OrderLine    
-  Parameters:  INPUT - piOrderNum = The OrderNum of the associated Order 
-               OUTPUT - piLineNum = The generated Line Number
-  Notes:  First Line Number is 1     
-------------------------------------------------------------------------------*/
-    DEFINE INPUT  PARAMETER piOrderNum AS INTEGER    NO-UNDO.
-    DEFINE OUTPUT  PARAMETER piLineNum AS INTEGER    NO-UNDO.
-    FIND LAST OrderLine WHERE OrderLine.OrderNum = piOrderNum NO-LOCK NO-ERROR.
-    IF AVAILABLE OrderLine THEN 
-        piLineNum = OrderLine.LineNum + 1.
-    ELSE
-        piLineNum = 1.
-END PROCEDURE.
+/*PROCEDURE GetNewLineNum :                                                       */
+/*/*------------------------------------------------------------------------------*/
+/*  Purpose: Compute line number for new OrderLine                                */
+/*  Parameters:  INPUT - piOrderNum = The OrderNum of the associated Order        */
+/*               OUTPUT - piLineNum = The generated Line Number                   */
+/*  Notes:  First Line Number is 1                                                */
+/*------------------------------------------------------------------------------*/*/
+/*    DEFINE INPUT  PARAMETER piOrderNum AS INTEGER    NO-UNDO.                   */
+/*    DEFINE OUTPUT  PARAMETER piLineNum AS INTEGER    NO-UNDO.                   */
+/*    FIND LAST OrderLine WHERE OrderLine.OrderNum = piOrderNum NO-LOCK NO-ERROR. */
+/*    IF AVAILABLE OrderLine THEN                                                 */
+/*        piLineNum = OrderLine.LineNum + 1.                                      */
+/*    ELSE                                                                        */
+/*        piLineNum = 1.                                                          */
+/*END PROCEDURE.                                                                  */
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
@@ -483,26 +484,26 @@ END PROCEDURE.
 &IF DEFINED(EXCLUDE-GetOrderlineData) = 0 &THEN
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE GetOrderlineData Procedure 
-PROCEDURE GetOrderlineData :
-/*------------------------------------------------------------------------------
-  Purpose: Retrieve the orderline records for a specific order and pass back 
-            to the calling procedure.    
-  Parameters:  ttOrderline - Temp-table used to pass records between procedures.
-               piKeyValue - The OrderNum for which orderlines are required
-  Notes: The procedure uses a query to find the orderlines for a specific
-         order.     
-------------------------------------------------------------------------------*/
-    DEFINE OUTPUT PARAMETER TABLE FOR ttOrderline.
-    DEFINE INPUT  PARAMETER piKeyValue  AS INTEGER    NO-UNDO.
-
-    EMPTY TEMP-TABLE ttOrderline NO-ERROR.
-
-    FOR EACH Orderline WHERE Orderline.OrderNum = piKeyValue NO-LOCK: 
-        CREATE ttOrderline.
-        BUFFER-COPY Orderline TO ttOrderline.
-        ASSIGN ttOrderline.rowIdent = ROWID(Orderline).
-    END.
-END PROCEDURE.
+/*PROCEDURE GetOrderlineData :                                                    */
+/*/*------------------------------------------------------------------------------*/
+/*  Purpose: Retrieve the orderline records for a specific order and pass back    */
+/*            to the calling procedure.                                           */
+/*  Parameters:  ttOrderline - Temp-table used to pass records between procedures.*/
+/*               piKeyValue - The OrderNum for which orderlines are required      */
+/*  Notes: The procedure uses a query to find the orderlines for a specific       */
+/*         order.                                                                 */
+/*------------------------------------------------------------------------------*/*/
+/*    DEFINE OUTPUT PARAMETER TABLE FOR ttOrderline.                              */
+/*    DEFINE INPUT  PARAMETER piKeyValue  AS INTEGER    NO-UNDO.                  */
+/*                                                                                */
+/*    EMPTY TEMP-TABLE ttOrderline NO-ERROR.                                      */
+/*                                                                                */
+/*    FOR EACH Orderline WHERE Orderline.OrderNum = piKeyValue NO-LOCK:           */
+/*        CREATE ttOrderline.                                                     */
+/*        BUFFER-COPY Orderline TO ttOrderline.                                   */
+/*        ASSIGN ttOrderline.rowIdent = ROWID(Orderline).                         */
+/*    END.                                                                        */
+/*END PROCEDURE.                                                                  */
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
@@ -512,34 +513,34 @@ END PROCEDURE.
 &IF DEFINED(EXCLUDE-GetOrderlineRecord) = 0 &THEN
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE GetOrderlineRecord Procedure 
-PROCEDURE GetOrderlineRecord :
-/*------------------------------------------------------------------------------
-  Purpose: Retrieve a specific orderline record and pass it back to the calling 
-            procedure.    
-  Parameters:  
-        ttOrderline - Temp-table used to pass record between procedures.
-        prOrderlineRow - RowID of the record to retrieve.
-  Notes:       
-------------------------------------------------------------------------------*/
-  DEFINE OUTPUT PARAMETER TABLE FOR ttOrderLine.
-  DEFINE INPUT  PARAMETER prOrderLineRow AS ROWID NO-UNDO.
-
-  EMPTY TEMP-TABLE ttOrderLine NO-ERROR.
-
-  IF prOrderLineRow <> ? THEN
-      FIND OrderLine WHERE ROWID(OrderLine) = prOrderLineRow NO-LOCK NO-ERROR.
-  ELSE
-      FIND LAST OrderLine NO-LOCK NO-ERROR.  
-  IF AVAILABLE OrderLine THEN
-  DO:
-      CREATE ttOrderLine.
-      BUFFER-COPY OrderLine TO ttOrderLine.
-      ASSIGN ttOrderLine.RowIdent = ROWID(OrderLine).
-      RETURN.
-  END.
-  ELSE
-      RETURN "Record has been deleted!".
-END PROCEDURE.
+/*PROCEDURE GetOrderlineRecord :                                                  */
+/*/*------------------------------------------------------------------------------*/
+/*  Purpose: Retrieve a specific orderline record and pass it back to the calling */
+/*            procedure.                                                          */
+/*  Parameters:                                                                   */
+/*        ttOrderline - Temp-table used to pass record between procedures.        */
+/*        prOrderlineRow - RowID of the record to retrieve.                       */
+/*  Notes:                                                                        */
+/*------------------------------------------------------------------------------*/*/
+/*  DEFINE OUTPUT PARAMETER TABLE FOR ttOrderLine.                                */
+/*  DEFINE INPUT  PARAMETER prOrderLineRow AS ROWID NO-UNDO.                      */
+/*                                                                                */
+/*  EMPTY TEMP-TABLE ttOrderLine NO-ERROR.                                        */
+/*                                                                                */
+/*  IF prOrderLineRow <> ? THEN                                                   */
+/*      FIND OrderLine WHERE ROWID(OrderLine) = prOrderLineRow NO-LOCK NO-ERROR.  */
+/*  ELSE                                                                          */
+/*      FIND LAST OrderLine NO-LOCK NO-ERROR.                                     */
+/*  IF AVAILABLE OrderLine THEN                                                   */
+/*  DO:                                                                           */
+/*      CREATE ttOrderLine.                                                       */
+/*      BUFFER-COPY OrderLine TO ttOrderLine.                                     */
+/*      ASSIGN ttOrderLine.RowIdent = ROWID(OrderLine).                           */
+/*      RETURN.                                                                   */
+/*  END.                                                                          */
+/*  ELSE                                                                          */
+/*      RETURN "Record has been deleted!".                                        */
+/*END PROCEDURE.                                                                  */
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
@@ -549,34 +550,34 @@ END PROCEDURE.
 &IF DEFINED(EXCLUDE-GetOrderRecord) = 0 &THEN
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE GetOrderRecord Procedure 
-PROCEDURE GetOrderRecord :
-/*------------------------------------------------------------------------------
-  Purpose: Retrieve a specific order record and pass it back to the calling 
-            procedure.    
-  Parameters:  
-        ttOrder - Temp-table used to pass record between procedures.
-        prOrderRow - RowID of the record to retrieve.
-  Notes:       
-------------------------------------------------------------------------------*/
-  DEFINE OUTPUT PARAMETER TABLE FOR ttOrder.
-  DEFINE INPUT  PARAMETER prOrderRow AS ROWID NO-UNDO.
-
-  EMPTY TEMP-TABLE ttOrder NO-ERROR.
-
-  IF prOrderRow <> ? THEN
-      FIND Order WHERE ROWID(Order) = prOrderRow NO-LOCK NO-ERROR.
-  ELSE
-      FIND LAST Order NO-LOCK NO-ERROR.  
-  IF AVAILABLE Order THEN
-  DO:
-      CREATE ttOrder.
-      BUFFER-COPY Order TO ttOrder.
-      ASSIGN ttOrder.RowIdent = ROWID(Order).
-      RETURN.
-  END.
-  ELSE
-      RETURN "Record has been deleted!".           
-END PROCEDURE.
+/*PROCEDURE GetOrderRecord :                                                      */
+/*/*------------------------------------------------------------------------------*/
+/*  Purpose: Retrieve a specific order record and pass it back to the calling     */
+/*            procedure.                                                          */
+/*  Parameters:                                                                   */
+/*        ttOrder - Temp-table used to pass record between procedures.            */
+/*        prOrderRow - RowID of the record to retrieve.                           */
+/*  Notes:                                                                        */
+/*------------------------------------------------------------------------------*/*/
+/*  DEFINE OUTPUT PARAMETER TABLE FOR ttOrder.                                    */
+/*  DEFINE INPUT  PARAMETER prOrderRow AS ROWID NO-UNDO.                          */
+/*                                                                                */
+/*  EMPTY TEMP-TABLE ttOrder NO-ERROR.                                            */
+/*                                                                                */
+/*  IF prOrderRow <> ? THEN                                                       */
+/*      FIND Order WHERE ROWID(Order) = prOrderRow NO-LOCK NO-ERROR.              */
+/*  ELSE                                                                          */
+/*      FIND LAST Order NO-LOCK NO-ERROR.                                         */
+/*  IF AVAILABLE Order THEN                                                       */
+/*  DO:                                                                           */
+/*      CREATE ttOrder.                                                           */
+/*      BUFFER-COPY Order TO ttOrder.                                             */
+/*      ASSIGN ttOrder.RowIdent = ROWID(Order).                                   */
+/*      RETURN.                                                                   */
+/*  END.                                                                          */
+/*  ELSE                                                                          */
+/*      RETURN "Record has been deleted!".                                        */
+/*END PROCEDURE.                                                                  */
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
@@ -612,34 +613,34 @@ END PROCEDURE.
 &IF DEFINED(EXCLUDE-GetRepRecord) = 0 &THEN
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE GetRepRecord Procedure 
-PROCEDURE GetRepRecord :
-/*------------------------------------------------------------------------------
-  Purpose: Retrieve a specific sales rep record and pass it back to the calling 
-            procedure.    
-  Parameters:  
-        ttSalesRep - Temp-table used to pass record between procedures.
-        prSalesrepRow - RowID of the record to retrieve.
-  Notes:       
-------------------------------------------------------------------------------*/
-  DEFINE OUTPUT PARAMETER TABLE FOR ttSalesRep.
-  DEFINE INPUT  PARAMETER prSalesRepRow AS ROWID NO-UNDO.
-
-  EMPTY TEMP-TABLE ttSalesRep NO-ERROR.
-
-  IF prSalesRepRow <> ? THEN
-      FIND SalesRep WHERE ROWID(SalesRep) = prSalesRepRow NO-LOCK NO-ERROR.
-  ELSE
-      FIND LAST SalesRep NO-LOCK NO-ERROR.  
-  IF AVAILABLE SalesRep THEN
-  DO:
-      CREATE ttSalesRep.
-      BUFFER-COPY SalesRep TO ttSalesRep.
-      ASSIGN ttSalesRep.RowIdent = ROWID(SalesRep).
-      RETURN.
-  END.
-  ELSE
-      RETURN "Record has been deleted!".
-END PROCEDURE.
+/*PROCEDURE GetRepRecord :                                                        */
+/*/*------------------------------------------------------------------------------*/
+/*  Purpose: Retrieve a specific sales rep record and pass it back to the calling */
+/*            procedure.                                                          */
+/*  Parameters:                                                                   */
+/*        ttSalesRep - Temp-table used to pass record between procedures.         */
+/*        prSalesrepRow - RowID of the record to retrieve.                        */
+/*  Notes:                                                                        */
+/*------------------------------------------------------------------------------*/*/
+/*  DEFINE OUTPUT PARAMETER TABLE FOR ttSalesRep.                                 */
+/*  DEFINE INPUT  PARAMETER prSalesRepRow AS ROWID NO-UNDO.                       */
+/*                                                                                */
+/*  EMPTY TEMP-TABLE ttSalesRep NO-ERROR.                                         */
+/*                                                                                */
+/*  IF prSalesRepRow <> ? THEN                                                    */
+/*      FIND SalesRep WHERE ROWID(SalesRep) = prSalesRepRow NO-LOCK NO-ERROR.     */
+/*  ELSE                                                                          */
+/*      FIND LAST SalesRep NO-LOCK NO-ERROR.                                      */
+/*  IF AVAILABLE SalesRep THEN                                                    */
+/*  DO:                                                                           */
+/*      CREATE ttSalesRep.                                                        */
+/*      BUFFER-COPY SalesRep TO ttSalesRep.                                       */
+/*      ASSIGN ttSalesRep.RowIdent = ROWID(SalesRep).                             */
+/*      RETURN.                                                                   */
+/*  END.                                                                          */
+/*  ELSE                                                                          */
+/*      RETURN "Record has been deleted!".                                        */
+/*END PROCEDURE.                                                                  */
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
@@ -692,48 +693,48 @@ END PROCEDURE.
 &IF DEFINED(EXCLUDE-SaveInvoiceRecord) = 0 &THEN
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE SaveInvoiceRecord Procedure 
-PROCEDURE SaveInvoiceRecord :
-/*------------------------------------------------------------------------------
-  Purpose: Commit a invoice record to the database.    
-  Parameters:  
-               ttInvoice - Temp-table used to pass record in to save and return
-                            modified record to calling procedure.
-               pcMode     - Identify whether this is a modified "Mod" or
-                            new "New" record.
-  Notes:       
-------------------------------------------------------------------------------*/
-    DEFINE INPUT-OUTPUT PARAMETER TABLE FOR  ttInvoice.
-    DEFINE INPUT PARAMETER pcMode AS CHARACTER  NO-UNDO.
-
-    FIND FIRST ttInvoice.
-
-    DO TRANSACTION:
-        IF pcMode = "New":U THEN DO:
-            IF CAN-FIND(Invoice WHERE Invoice.OrderNum = ttInvoice.OrderNum) THEN
-            DO:
-                EMPTY TEMP-TABLE ttInvoice.
-                RETURN "Cannot duplicate invoice. Transaction aborted.".
-            END.
-            ELSE
-                CREATE Invoice.
-        END.
-        ELSE
-            FIND Invoice WHERE ROWID(Invoice) = ttInvoice.RowIdent 
-                EXCLUSIVE-LOCK NO-WAIT NO-ERROR.
-        /* Do the following for both new and modified records */
-        IF AVAILABLE Invoice THEN
-            BUFFER-COPY ttInvoice EXCEPT RowIdent InvoiceNum TO Invoice.
-        ELSE
-            IF LOCKED (Invoice) THEN
-                RETURN "Record is locked.  Try later.".
-            ELSE 
-                RETURN "Record has been deleted!".
-    END. /* Transaction */
-    FIND CURRENT Invoice NO-LOCK.
-    BUFFER-COPY Invoice TO ttInvoice.
-    ttInvoice.rowIdent = ROWID(Invoice).
-    RETURN.
-END PROCEDURE.
+/*PROCEDURE SaveInvoiceRecord :                                                    */
+/*/*------------------------------------------------------------------------------ */
+/*  Purpose: Commit a invoice record to the database.                              */
+/*  Parameters:                                                                    */
+/*               ttInvoice - Temp-table used to pass record in to save and return  */
+/*                            modified record to calling procedure.                */
+/*               pcMode     - Identify whether this is a modified "Mod" or         */
+/*                            new "New" record.                                    */
+/*  Notes:                                                                         */
+/*------------------------------------------------------------------------------*/ */
+/*    DEFINE INPUT-OUTPUT PARAMETER TABLE FOR  ttInvoice.                          */
+/*    DEFINE INPUT PARAMETER pcMode AS CHARACTER  NO-UNDO.                         */
+/*                                                                                 */
+/*    FIND FIRST ttInvoice.                                                        */
+/*                                                                                 */
+/*    DO TRANSACTION:                                                              */
+/*        IF pcMode = "New":U THEN DO:                                             */
+/*            IF CAN-FIND(Invoice WHERE Invoice.OrderNum = ttInvoice.OrderNum) THEN*/
+/*            DO:                                                                  */
+/*                EMPTY TEMP-TABLE ttInvoice.                                      */
+/*                RETURN "Cannot duplicate invoice. Transaction aborted.".         */
+/*            END.                                                                 */
+/*            ELSE                                                                 */
+/*                CREATE Invoice.                                                  */
+/*        END.                                                                     */
+/*        ELSE                                                                     */
+/*            FIND Invoice WHERE ROWID(Invoice) = ttInvoice.RowIdent               */
+/*                EXCLUSIVE-LOCK NO-WAIT NO-ERROR.                                 */
+/*        /* Do the following for both new and modified records */                 */
+/*        IF AVAILABLE Invoice THEN                                                */
+/*            BUFFER-COPY ttInvoice EXCEPT RowIdent InvoiceNum TO Invoice.         */
+/*        ELSE                                                                     */
+/*            IF LOCKED (Invoice) THEN                                             */
+/*                RETURN "Record is locked.  Try later.".                          */
+/*            ELSE                                                                 */
+/*                RETURN "Record has been deleted!".                               */
+/*    END. /* Transaction */                                                       */
+/*    FIND CURRENT Invoice NO-LOCK.                                                */
+/*    BUFFER-COPY Invoice TO ttInvoice.                                            */
+/*    ttInvoice.rowIdent = ROWID(Invoice).                                         */
+/*    RETURN.                                                                      */
+/*END PROCEDURE.                                                                   */
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
@@ -743,40 +744,40 @@ END PROCEDURE.
 &IF DEFINED(EXCLUDE-SaveOrderlineRecord) = 0 &THEN
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE SaveOrderlineRecord Procedure 
-PROCEDURE SaveOrderlineRecord :
-/*------------------------------------------------------------------------------
-  Purpose: Commit a orderline record to the database.    
-  Parameters:  
-               ttOrderline - Temp-table used to pass record in to save and return
-                            modified record to calling procedure.
-               pcMode     - Identify whether this is a modified "Mod" or
-                            new "New" record.
-  Notes:       
-------------------------------------------------------------------------------*/
-    DEFINE INPUT-OUTPUT PARAMETER TABLE FOR  ttOrderLine.
-    DEFINE INPUT PARAMETER pcMode AS CHARACTER  NO-UNDO.
-
-    FIND FIRST ttOrderLine.
-    DO TRANSACTION:
-        IF pcMode = "New" THEN 
-            CREATE OrderLine.
-        ELSE
-            FIND OrderLine WHERE ROWID(OrderLine) = ttOrderLine.RowIdent 
-                EXCLUSIVE-LOCK NO-WAIT NO-ERROR.
-        /* Do the following for both new and modified records */
-        IF AVAILABLE OrderLine THEN
-            BUFFER-COPY ttOrderLine EXCEPT RowIdent TO OrderLine.
-        ELSE
-            IF LOCKED (OrderLine) THEN
-                RETURN "Record is locked.  Try later.".
-            ELSE 
-                RETURN "Record has been deleted!".
-    END. /* Transaction */
-    FIND CURRENT OrderLine NO-LOCK NO-ERROR.
-    BUFFER-COPY OrderLine TO ttOrderLine.
-    ttOrderLine.rowIdent = ROWID(OrderLine).
-    RETURN.
-END PROCEDURE.
+/*PROCEDURE SaveOrderlineRecord :                                                  */
+/*/*------------------------------------------------------------------------------ */
+/*  Purpose: Commit a orderline record to the database.                            */
+/*  Parameters:                                                                    */
+/*               ttOrderline - Temp-table used to pass record in to save and return*/
+/*                            modified record to calling procedure.                */
+/*               pcMode     - Identify whether this is a modified "Mod" or         */
+/*                            new "New" record.                                    */
+/*  Notes:                                                                         */
+/*------------------------------------------------------------------------------*/ */
+/*    DEFINE INPUT-OUTPUT PARAMETER TABLE FOR  ttOrderLine.                        */
+/*    DEFINE INPUT PARAMETER pcMode AS CHARACTER  NO-UNDO.                         */
+/*                                                                                 */
+/*    FIND FIRST ttOrderLine.                                                      */
+/*    DO TRANSACTION:                                                              */
+/*        IF pcMode = "New" THEN                                                   */
+/*            CREATE OrderLine.                                                    */
+/*        ELSE                                                                     */
+/*            FIND OrderLine WHERE ROWID(OrderLine) = ttOrderLine.RowIdent         */
+/*                EXCLUSIVE-LOCK NO-WAIT NO-ERROR.                                 */
+/*        /* Do the following for both new and modified records */                 */
+/*        IF AVAILABLE OrderLine THEN                                              */
+/*            BUFFER-COPY ttOrderLine EXCEPT RowIdent TO OrderLine.                */
+/*        ELSE                                                                     */
+/*            IF LOCKED (OrderLine) THEN                                           */
+/*                RETURN "Record is locked.  Try later.".                          */
+/*            ELSE                                                                 */
+/*                RETURN "Record has been deleted!".                               */
+/*    END. /* Transaction */                                                       */
+/*    FIND CURRENT OrderLine NO-LOCK NO-ERROR.                                     */
+/*    BUFFER-COPY OrderLine TO ttOrderLine.                                        */
+/*    ttOrderLine.rowIdent = ROWID(OrderLine).                                     */
+/*    RETURN.                                                                      */
+/*END PROCEDURE.                                                                   */
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
@@ -786,40 +787,40 @@ END PROCEDURE.
 &IF DEFINED(EXCLUDE-SaveOrderRecord) = 0 &THEN
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE SaveOrderRecord Procedure 
-PROCEDURE SaveOrderRecord :
-/*------------------------------------------------------------------------------
-  Purpose: Commit a order record to the database.    
-  Parameters:  
-               ttOrder - Temp-table used to pass record in to save and return
-                            modified record to calling procedure.
-               pcMode     - Identify whether this is a modified "Mod" or
-                            new "New" record.
-  Notes:       
-------------------------------------------------------------------------------*/
-    DEFINE INPUT-OUTPUT PARAMETER TABLE FOR  ttOrder.
-    DEFINE INPUT PARAMETER pcMode AS CHARACTER  NO-UNDO.
-
-    FIND FIRST ttOrder.
-    DO TRANSACTION:
-        IF pcMode = "New" THEN 
-            CREATE Order.
-        ELSE
-            FIND Order WHERE ROWID(Order) = ttOrder.RowIdent 
-                EXCLUSIVE-LOCK NO-WAIT NO-ERROR.
-        /* Do the following for both new and modified records */
-        IF AVAILABLE Order THEN
-            BUFFER-COPY ttOrder EXCEPT RowIdent OrderNum TO Order.
-        ELSE
-            IF LOCKED (Order) THEN
-                RETURN "Record is locked.  Try later.".
-            ELSE 
-                RETURN "Record has been deleted!".
-    END. /* Transaction */
-    FIND CURRENT Order NO-LOCK NO-ERROR.
-    BUFFER-COPY Order TO ttOrder.
-    ttOrder.rowIdent = ROWID(Order).
-    RETURN.
-END PROCEDURE.
+/*PROCEDURE SaveOrderRecord :                                                     */
+/*/*------------------------------------------------------------------------------*/
+/*  Purpose: Commit a order record to the database.                               */
+/*  Parameters:                                                                   */
+/*               ttOrder - Temp-table used to pass record in to save and return   */
+/*                            modified record to calling procedure.               */
+/*               pcMode     - Identify whether this is a modified "Mod" or        */
+/*                            new "New" record.                                   */
+/*  Notes:                                                                        */
+/*------------------------------------------------------------------------------*/*/
+/*    DEFINE INPUT-OUTPUT PARAMETER TABLE FOR  ttOrder.                           */
+/*    DEFINE INPUT PARAMETER pcMode AS CHARACTER  NO-UNDO.                        */
+/*                                                                                */
+/*    FIND FIRST ttOrder.                                                         */
+/*    DO TRANSACTION:                                                             */
+/*        IF pcMode = "New" THEN                                                  */
+/*            CREATE Order.                                                       */
+/*        ELSE                                                                    */
+/*            FIND Order WHERE ROWID(Order) = ttOrder.RowIdent                    */
+/*                EXCLUSIVE-LOCK NO-WAIT NO-ERROR.                                */
+/*        /* Do the following for both new and modified records */                */
+/*        IF AVAILABLE Order THEN                                                 */
+/*            BUFFER-COPY ttOrder EXCEPT RowIdent OrderNum TO Order.              */
+/*        ELSE                                                                    */
+/*            IF LOCKED (Order) THEN                                              */
+/*                RETURN "Record is locked.  Try later.".                         */
+/*            ELSE                                                                */
+/*                RETURN "Record has been deleted!".                              */
+/*    END. /* Transaction */                                                      */
+/*    FIND CURRENT Order NO-LOCK NO-ERROR.                                        */
+/*    BUFFER-COPY Order TO ttOrder.                                               */
+/*    ttOrder.rowIdent = ROWID(Order).                                            */
+/*    RETURN.                                                                     */
+/*END PROCEDURE.                                                                  */
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
@@ -829,40 +830,40 @@ END PROCEDURE.
 &IF DEFINED(EXCLUDE-SaveRepRecord) = 0 &THEN
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE SaveRepRecord Procedure 
-PROCEDURE SaveRepRecord :
-/*------------------------------------------------------------------------------
-  Purpose: Commit a sales rep record to the database.    
-  Parameters:  
-               ttSalesrep - Temp-table used to pass record in to save and return
-                            modified record to calling procedure.
-               pcMode     - Identify whether this is a modified "Mod" or
-                            new "New" record.
-  Notes:       
-------------------------------------------------------------------------------*/
-    DEFINE INPUT-OUTPUT PARAMETER TABLE FOR  ttSalesRep.
-    DEFINE INPUT PARAMETER pcMode AS CHARACTER  NO-UNDO.
-
-    FIND FIRST ttSalesRep.
-    DO TRANSACTION:
-        IF pcMode = "New" THEN 
-            CREATE SalesRep.
-        ELSE
-            FIND SalesRep WHERE ROWID(SalesRep) = ttSalesRep.RowIdent 
-                EXCLUSIVE-LOCK NO-WAIT NO-ERROR.
-        /* Do the following for both new and modified records */
-        IF AVAILABLE SalesRep THEN
-            BUFFER-COPY ttSalesRep EXCEPT RowIdent TO SalesRep.
-        ELSE
-            IF LOCKED (SalesRep) THEN
-                RETURN "Record is locked.  Try later.".
-            ELSE 
-                RETURN "Record has been deleted!".
-    END. /* Transaction */
-    FIND CURRENT SalesRep NO-LOCK NO-ERROR.
-    BUFFER-COPY SalesRep TO ttSalesRep.
-    ttSalesRep.rowIdent = ROWID(SalesRep).
-    RETURN.
-END PROCEDURE.
+/*PROCEDURE SaveRepRecord :                                                       */
+/*/*------------------------------------------------------------------------------*/
+/*  Purpose: Commit a sales rep record to the database.                           */
+/*  Parameters:                                                                   */
+/*               ttSalesrep - Temp-table used to pass record in to save and return*/
+/*                            modified record to calling procedure.               */
+/*               pcMode     - Identify whether this is a modified "Mod" or        */
+/*                            new "New" record.                                   */
+/*  Notes:                                                                        */
+/*------------------------------------------------------------------------------*/*/
+/*    DEFINE INPUT-OUTPUT PARAMETER TABLE FOR  ttSalesRep.                        */
+/*    DEFINE INPUT PARAMETER pcMode AS CHARACTER  NO-UNDO.                        */
+/*                                                                                */
+/*    FIND FIRST ttSalesRep.                                                      */
+/*    DO TRANSACTION:                                                             */
+/*        IF pcMode = "New" THEN                                                  */
+/*            CREATE SalesRep.                                                    */
+/*        ELSE                                                                    */
+/*            FIND SalesRep WHERE ROWID(SalesRep) = ttSalesRep.RowIdent           */
+/*                EXCLUSIVE-LOCK NO-WAIT NO-ERROR.                                */
+/*        /* Do the following for both new and modified records */                */
+/*        IF AVAILABLE SalesRep THEN                                              */
+/*            BUFFER-COPY ttSalesRep EXCEPT RowIdent TO SalesRep.                 */
+/*        ELSE                                                                    */
+/*            IF LOCKED (SalesRep) THEN                                           */
+/*                RETURN "Record is locked.  Try later.".                         */
+/*            ELSE                                                                */
+/*                RETURN "Record has been deleted!".                              */
+/*    END. /* Transaction */                                                      */
+/*    FIND CURRENT SalesRep NO-LOCK NO-ERROR.                                     */
+/*    BUFFER-COPY SalesRep TO ttSalesRep.                                         */
+/*    ttSalesRep.rowIdent = ROWID(SalesRep).                                      */
+/*    RETURN.                                                                     */
+/*END PROCEDURE.                                                                  */
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
