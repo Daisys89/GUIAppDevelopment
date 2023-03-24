@@ -7,7 +7,7 @@
 /* Temp-Table and Buffer definitions                                    */
 DEFINE TEMP-TABLE ttCustomer NO-UNDO LIKE Sports2000.Customer
        FIELD RowIdent AS ROWID
-       FIELD Orders AS INTEGER
+       FIELD NumOrders AS INTEGER
        INDEX RowIdent RowIdent.
 DEFINE TEMP-TABLE ttInvoice NO-UNDO LIKE Sports2000.Invoice
        FIELD RowIdent AS ROWID
@@ -283,15 +283,25 @@ PROCEDURE GetCustData :
   Notes:       
 ------------------------------------------------------------------------------*/
     DEFINE OUTPUT PARAMETER TABLE FOR ttCustomer.
-
+    DEFINE VARIABLE NumOrders AS INTEGER NO-UNDO.
+    
     EMPTY TEMP-TABLE ttCustomer.
     
     FOR EACH Customer NO-LOCK : 
-        CREATE ttCustomer.
-        BUFFER-COPY Customer TO ttCustomer.
-        ASSIGN ttCustomer.RowIdent = ROWID(Customer).
+        NumOrders = 0.
+        FOR EACH Order WHERE Order.CustNum = Customer.CustNum:
+            NumOrders = NumOrders + 1.
+        END.  
+        
+        IF NumOrders <> 0 THEN DO:          
+            CREATE ttCustomer.
+            BUFFER-COPY Customer TO ttCustomer.
+            ASSIGN ttCustomer.RowIdent = ROWID(Customer)
+                   ttCustomer.NumOrders = NumOrders.
+        END.
     END.
 END PROCEDURE.
+
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
