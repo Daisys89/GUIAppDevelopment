@@ -307,11 +307,9 @@ DO:
         
         MESSAGE SUBSTITUTE("Are you sure you want to loose the changes you made to customer ~"&1~" ?", ttCustomerUpd.Name)
             VIEW-AS ALERT-BOX BUTTONS YES-NO UPDATE lAnswer. 
-        // Delete custnum if new customer is cancelled.
-        IF ttCustomerUpd.CustNum = 0 AND lAnswer THEN
-        DO:    
-            APPLY "CLOSE":U TO THIS-PROCEDURE. 
-        END.    
+        // Delete custnum if new customer is cancelled. When "New" is selected, new record is directly created.
+        IF  lAnswer THEN   
+            APPLY "CLOSE":U TO THIS-PROCEDURE.     
         ELSE 
             RETURN NO-APPLY.
     END.
@@ -328,8 +326,6 @@ ON CHOOSE OF Btn_Save IN FRAME Dialog-Frame /* Save */
         DEFINE VARIABLE lEmailValidated      AS LOGICAL NO-UNDO.
         DEFINE VARIABLE lPostalCodeValidated AS LOGICAL NO-UNDO.        
         
-        lEmailValidated      = ValidateEmail(ttCustomerUpd.EmailAddress:SCREEN-VALUE). 
-        
         IF ttCustomerUpd.Country:SCREEN-VALUE = "NL" OR
            ttCustomerUpd.Country:SCREEN-VALUE = "Netherlands" OR
            ttCustomerUpd.Country:SCREEN-VALUE = "Nederland" THEN
@@ -345,6 +341,7 @@ ON CHOOSE OF Btn_Save IN FRAME Dialog-Frame /* Save */
             RETURN NO-APPLY.
         END.
 
+        lEmailValidated = ValidateEmail(ttCustomerUpd.EmailAddress:SCREEN-VALUE). 
         IF NOT lEmailValidated THEN 
         DO:
             MESSAGE "You have entered an invalid email address."
