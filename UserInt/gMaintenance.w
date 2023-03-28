@@ -10,6 +10,7 @@
 /* Temp-Table and Buffer definitions                                    */
 DEFINE TEMP-TABLE ttCustomerUpd NO-UNDO LIKE Customer
        FIELD RowIdent AS ROWID
+       FIELD NumOrders AS INTEGER
        INDEX RowIdent RowIdent.
 DEFINE TEMP-TABLE ttSalesrep NO-UNDO LIKE Salesrep
        FIELD RowIdent AS ROWID
@@ -130,6 +131,16 @@ FUNCTION ValidateEmail RETURNS LOGICAL
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
+
+
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION-FORWARD ValidateField Dialog-Frame
+FUNCTION ValidateField RETURNS LOGICAL 
+  (INPUT phFieldHandle AS HANDLE) FORWARD.
+
+/* _UIB-CODE-BLOCK-END */
+&ANALYZE-RESUME
+
+
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION-FORWARD ValidatePostalCode Dialog-Frame 
 FUNCTION ValidatePostalCode RETURNS LOGICAL
@@ -294,11 +305,13 @@ ON CHOOSE OF Btn_Cancel IN FRAME Dialog-Frame /* Cancel */
 DO:
         DEFINE VARIABLE lAnswer AS LOGICAL NO-UNDO.
         
-        MESSAGE SUBSTITUTE("Are you sure you want to loose the changes you made to customer '&1' ?", ttCustomerUpd.Name)
+        MESSAGE SUBSTITUTE("Are you sure you want to loose the changes you made to customer ~"&1~" ?", ttCustomerUpd.Name)
             VIEW-AS ALERT-BOX BUTTONS YES-NO UPDATE lAnswer. 
-        
-        IF lAnswer THEN
+        // Delete custnum if new customer is cancelled.
+        IF ttCustomerUpd.CustNum = 0 AND lAnswer THEN
+        DO:    
             APPLY "CLOSE":U TO THIS-PROCEDURE. 
+        END.    
         ELSE 
             RETURN NO-APPLY.
     END.
@@ -310,57 +323,28 @@ DO:
 &Scoped-define SELF-NAME Btn_Save
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL Btn_Save Dialog-Frame
 ON CHOOSE OF Btn_Save IN FRAME Dialog-Frame /* Save */
-DO:
+    DO:
         DEFINE VARIABLE lAnswer              AS LOGICAL NO-UNDO.  
         DEFINE VARIABLE lEmailValidated      AS LOGICAL NO-UNDO.
         DEFINE VARIABLE lPostalCodeValidated AS LOGICAL NO-UNDO.        
         
         lEmailValidated      = ValidateEmail(ttCustomerUpd.EmailAddress:SCREEN-VALUE). 
-        lPostalCodeValidated = ValidatePostalCode(ttCustomerUpd.PostalCode:SCREEN-VALUE).
-              
-        IF ttCustomerUpd.Name:SCREEN-VALUE = "" THEN 
+        
+        IF ttCustomerUpd.Country:SCREEN-VALUE = "NL" OR
+           ttCustomerUpd.Country:SCREEN-VALUE = "Netherlands" OR
+           ttCustomerUpd.Country:SCREEN-VALUE = "Nederland" THEN
         DO:
-            MESSAGE "You forgot to enter the name.":U
-                VIEW-AS ALERT-BOX.
-            APPLY "ENTRY":U TO ttCustomerUpd.Name IN FRAME {&FRAME-NAME}.
-            RETURN NO-APPLY .   
-        END.  
-        IF ttCustomerUpd.Address:SCREEN-VALUE = "" THEN 
-        DO:
-            MESSAGE "You forgot to enter the address.":U
-                VIEW-AS ALERT-BOX.
-            APPLY "ENTRY":U TO ttCustomerUpd.Address IN FRAME {&FRAME-NAME}. 
-            RETURN NO-APPLY .   
+            lPostalCodeValidated = ValidatePostalCode(ttCustomerUpd.PostalCode:SCREEN-VALUE).
         END.
-        IF NOT lPostalCodeValidated THEN 
+
+        IF NOT lPostalCodeValidated THEN
         DO:
             MESSAGE "You have entered an incorrect postal code. Please use format 1234AB."
-                VIEW-AS ALERT-BOX.        
-            APPLY "ENTRY":U TO ttCustomerUpd.PostalCode IN FRAME {&FRAME-NAME}.
-            RETURN NO-APPLY.
-              
-        END.
-        IF ttCustomerUpd.PostalCode:SCREEN-VALUE = "" THEN 
-        DO: 
-            MESSAGE "You forgot to enter the postal code.":U
                 VIEW-AS ALERT-BOX.
             APPLY "ENTRY":U TO ttCustomerUpd.PostalCode IN FRAME {&FRAME-NAME}.
-            RETURN NO-APPLY.    
-        END.
-        IF ttCustomerUpd.City:SCREEN-VALUE = "" THEN 
-        DO:
-            MESSAGE "You forgot to enter the city.":U
-                VIEW-AS ALERT-BOX.
-            APPLY "ENTRY":U TO ttCustomerUpd.City IN FRAME {&FRAME-NAME}.
             RETURN NO-APPLY.
         END.
-        IF ttCustomerUpd.Country:SCREEN-VALUE = "" THEN 
-        DO:
-            MESSAGE "You forgot to enter the country.":U
-                VIEW-AS ALERT-BOX. 
-            APPLY "ENTRY":U TO ttCustomerUpd.Country IN FRAME {&FRAME-NAME}.
-            RETURN NO-APPLY.
-        END.
+
         IF NOT lEmailValidated THEN 
         DO:
             MESSAGE "You have entered an invalid email address."
@@ -368,21 +352,15 @@ DO:
             APPLY "ENTRY":U TO ttCustomerUpd.EmailAddress IN FRAME {&FRAME-NAME}.
             RETURN NO-APPLY.
         END.
-            
-        IF ttCustomerUpd.EmailAddress:INPUT-VALUE = "" THEN 
-        DO: 
-            MESSAGE "You forgot to enter the email address.":U
-                VIEW-AS ALERT-BOX.
-            APPLY "ENTRY":U TO ttCustomerUpd.EmailAddress IN FRAME {&FRAME-NAME}.
-            RETURN NO-APPLY.
-        END. 
-        IF ttCustomerUpd.SalesRep:INPUT-VALUE = "" THEN 
-        DO:
-            MESSAGE "You forgot to select the salesrep.":U 
-                VIEW-AS ALERT-BOX.
-            APPLY "ENTRY":U TO ttCustomerUpd.SalesRep IN FRAME {&FRAME-NAME}.
-            RETURN NO-APPLY.
-        END.
+
+        IF NOT ValidateField(INPUT ttCustomerUpd.Name:HANDLE)           THEN RETURN NO-APPLY. 
+        IF NOT ValidateField(INPUT ttCustomerUpd.Address:HANDLE)        THEN RETURN NO-APPLY. 
+        IF NOT ValidateField(INPUT ttCustomerUpd.PostalCode:HANDLE)     THEN RETURN NO-APPLY. 
+        IF NOT ValidateField(INPUT ttCustomerUpd.City:HANDLE)           THEN RETURN NO-APPLY. 
+        IF NOT ValidateField(INPUT ttCustomerUpd.Country:HANDLE)        THEN RETURN NO-APPLY. 
+        IF NOT ValidateField(INPUT ttCustomerUpd.EmailAddress:HANDLE)   THEN RETURN NO-APPLY. 
+        IF NOT ValidateField(INPUT ttCustomerUpd.SalesRep:HANDLE)       THEN RETURN NO-APPLY. 
+
         ELSE 
             MESSAGE "Are you sure you want to save this information?"
                 VIEW-AS ALERT-BOX BUTTONS YES-NO UPDATE lAnswer. 
@@ -393,7 +371,7 @@ DO:
             ASSIGN {&DISPLAYED-FIELDS}.
             /* Commit the data to the database */
             RUN SaveCustRecord IN ghDataUtil (INPUT-OUTPUT TABLE ttCustomerUpd, 
-                INPUT pcMode).
+                                              INPUT pcMode).
             IF RETURN-VALUE <> "" THEN
             DO:
                 MESSAGE RETURN-VALUE
@@ -455,8 +433,13 @@ DO:
 &Scoped-define SELF-NAME ttCustomerUpd.PostalCode
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL ttCustomerUpd.PostalCode Dialog-Frame
 ON LEAVE OF ttCustomerUpd.PostalCode IN FRAME Dialog-Frame /* Postal Code */
-DO:   
-        ttCustomerUpd.PostalCode:SCREEN-VALUE = CorrectPostalCodeInput(ttCustomerUpd.PostalCode:SCREEN-VALUE).   
+    DO:
+        IF ttCustomerUpd.Country:SCREEN-VALUE = "NL" OR
+           ttCustomerUpd.Country:SCREEN-VALUE = "Netherlands" OR
+           ttCustomerUpd.Country:SCREEN-VALUE = "Nederland" THEN 
+        DO:
+            ttCustomerUpd.PostalCode:SCREEN-VALUE = CorrectPostalCodeInput(ttCustomerUpd.PostalCode:SCREEN-VALUE).
+        END.
     END.
 
 /* _UIB-CODE-BLOCK-END */
@@ -560,6 +543,7 @@ PROCEDURE InitializeObjects :
                               Notes:       
                             ------------------------------------------------------------------------------*/
     ghDataUtil = DYNAMIC-FUNCTION('RunPersistent' IN phProcLib, "DataUtil.p":U).
+    
     DO WITH FRAME {&FRAME-NAME}:
         ttCustomerUpd.SalesRep:DELIMITER = ";":U.
         RUN GetRepData IN ghDataUtil(OUTPUT TABLE ttSalesRep).
@@ -571,19 +555,18 @@ PROCEDURE InitializeObjects :
     IF pcMode = "Mod":U THEN
     DO:
         RUN GetCustRecord IN ghDataUtil (OUTPUT TABLE ttCustomerUpd,
-            INPUT prowRowId).
+                                         INPUT prowRowId).
         IF RETURN-VALUE = "" THEN
             FIND FIRST ttCustomerUpd.  
-        FRAME Dialog-Frame:TITLE = "Edit Customer: ":U + ttCustomerUpd.Name. 
+            FRAME Dialog-Frame:TITLE = "Edit Customer: ":U + ttCustomerUpd.Name. 
     END.
     ELSE 
     DO:
         CREATE ttCustomerUpd.
         ttCustomerUpd.Country = "".
-        FRAME Dialog-Frame:TITLE = "Create New Customer ":U + ttCustomerUpd.Name.
+        FRAME Dialog-Frame:TITLE = "Create New Customer ":U.
     END.
     
-
     PUBLISH "CloseWindows":U .
 END PROCEDURE.
 
@@ -704,6 +687,31 @@ END FUNCTION.
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
+
+
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION ValidateField Dialog-Frame
+FUNCTION ValidateField RETURNS LOGICAL 
+  ( INPUT phFieldHandle AS HANDLE  ):
+/*------------------------------------------------------------------------------
+ Purpose:
+ Notes:
+------------------------------------------------------------------------------*/
+    DEFINE VARIABLE lValidated AS LOGICAL INITIAL TRUE NO-UNDO.
+
+    IF phFieldHandle:SCREEN-VALUE = "" THEN
+    DO:
+        MESSAGE "You forgot to enter the"LC(phFieldHandle:LABEL)"." VIEW-AS ALERT-BOX.
+        APPLY "ENTRY":U TO phFieldHandle.
+        lValidated = FALSE.
+    END.
+    RETURN lValidated.
+
+END FUNCTION.
+    
+/* _UIB-CODE-BLOCK-END */
+&ANALYZE-RESUME
+
+
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION ValidatePostalCode Dialog-Frame 
 FUNCTION ValidatePostalCode RETURNS LOGICAL

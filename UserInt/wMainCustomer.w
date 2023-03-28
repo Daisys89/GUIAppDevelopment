@@ -111,8 +111,6 @@ ttCustomer.Name NumOrders
 &ANALYZE-RESUME
 
 
-/* ************************  Function Prototypes ********************** */
-
 
 /* ***********************  Control Definitions  ********************** */
 
@@ -192,7 +190,7 @@ DEFINE FRAME DEFAULT-FRAME
      fiCustNum AT ROW 9.81 COL 2.8 NO-LABEL WIDGET-ID 2
      fiCustName AT ROW 9.81 COL 15.4 NO-LABEL WIDGET-ID 4
      fiRepName AT ROW 11.48 COL 15 COLON-ALIGNED WIDGET-ID 70
-     btnOrders AT ROW 11.48 COL 71 WIDGET-ID 12
+     btnOrders AT ROW 11.48 COL 74 WIDGET-ID 12
     WITH 1 DOWN NO-BOX KEEP-TAB-ORDER OVERLAY 
          SIDE-LABELS NO-UNDERLINE THREE-D 
          AT COL 2 ROW 1
@@ -233,21 +231,21 @@ IF SESSION:DISPLAY-TYPE = "GUI":U THEN
   CREATE WINDOW C-Win ASSIGN
          HIDDEN             = YES
          TITLE              = "Customers"
-         HEIGHT             = 13.33
+         HEIGHT             = 12.29
          WIDTH              = 91.8
          MAX-HEIGHT         = 48.43
          MAX-WIDTH          = 384
          VIRTUAL-HEIGHT     = 48.43
          VIRTUAL-WIDTH      = 384
-         RESIZE             = YES
-         SCROLL-BARS        = NO
-         STATUS-AREA        = NO
+         RESIZE             = yes
+         SCROLL-BARS        = no
+         STATUS-AREA        = no
          BGCOLOR            = ?
          FGCOLOR            = ?
-         KEEP-FRAME-Z-ORDER = YES
-         THREE-D            = YES
-         MESSAGE-AREA       = NO
-         SENSITIVE          = YES.
+         KEEP-FRAME-Z-ORDER = yes
+         THREE-D            = yes
+         MESSAGE-AREA       = no
+         SENSITIVE          = yes.
 ELSE {&WINDOW-NAME} = CURRENT-WINDOW.
 
 ASSIGN {&WINDOW-NAME}:MENUBAR    = MENU MENU-BAR-C-Win:HANDLE.
@@ -275,7 +273,7 @@ ASSIGN
 /* SETTINGS FOR FILL-IN fiRepName IN FRAME DEFAULT-FRAME
    NO-ENABLE                                                            */
 IF SESSION:DISPLAY-TYPE = "GUI":U AND VALID-HANDLE(C-Win)
-THEN C-Win:HIDDEN = NO.
+THEN C-Win:HIDDEN = no.
 
 /* _RUN-TIME-ATTRIBUTES-END */
 &ANALYZE-RESUME
@@ -348,7 +346,7 @@ DO:
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL brCustomer C-Win
 ON ENTRY OF brCustomer IN FRAME DEFAULT-FRAME
 DO:
-        //This is to make sure salesrep data is shown when first opening up the screen.
+        // This is to make sure salesrep data is shown when first opening up the screen.
         APPLY "VALUE-CHANGED":U TO brCustomer.  
     END.
 
@@ -359,9 +357,12 @@ DO:
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL brCustomer C-Win
 ON START-SEARCH OF brCustomer IN FRAME DEFAULT-FRAME
 DO:
-        // how to sort orders now its a result of a function?. 
-        gcSortClause = "BY " + BROWSE brCustomer:CURRENT-COLUMN:NAME.
+        // How to sort orders now its a result of a function?. 
+        /*    ROWID en FOCUSED-ROW bewaren voor de open query.              */
+        /*    Na de open query het record zoeken met een find.              */
+        /*    Daarna een REPOSITION TO ROWID en een SET-REPOSITIONED-ROW    */
         
+        gcSortClause = "BY " + BROWSE brCustomer:CURRENT-COLUMN:NAME.
         RUN ReopenQuery.
     END.
 
@@ -873,6 +874,4 @@ END PROCEDURE.
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
-
-/* ************************  Function Implementations ***************** */
 
