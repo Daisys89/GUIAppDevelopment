@@ -500,11 +500,12 @@ PROCEDURE FetchCurrentCust :
                       Notes:       
                     ------------------------------------------------------------------------------*/
     DEFINE INPUT PARAMETER piCustNum AS INTEGER.
+    DEFINE INPUT PARAMETER piName AS CHARACTER.
     
     FIND FIRST ttCustomer WHERE ttCustomer.CustNum = piCustNum NO-LOCK.
     IF AVAILABLE ttCustomer THEN 
         DISPLAY {&DISPLAYED-FIELDS} WITH FRAME {&FRAME-NAME}.
-    {&WINDOW-NAME}:TITLE = "Details of Customer ":U + ttCustomer.NAME.
+    {&WINDOW-NAME}:TITLE = "Details of Customer ":U + piName.
 
 END PROCEDURE.
 

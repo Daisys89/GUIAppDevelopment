@@ -199,7 +199,7 @@ DEFINE FRAME DEFAULT-FRAME
      fiCustNum AT ROW 9.81 COL 2.8 NO-LABEL WIDGET-ID 2
      fiCustName AT ROW 9.81 COL 15.4 NO-LABEL WIDGET-ID 4
      fiRepName AT ROW 11.48 COL 15 COLON-ALIGNED WIDGET-ID 70
-     btnOrders AT ROW 11.48 COL 73.4 WIDGET-ID 12
+     btnOrders AT ROW 11.48 COL 73.8 WIDGET-ID 12
     WITH 1 DOWN NO-BOX KEEP-TAB-ORDER OVERLAY 
          SIDE-LABELS NO-UNDERLINE THREE-D 
          AT COL 2 ROW 1
@@ -240,21 +240,21 @@ IF SESSION:DISPLAY-TYPE = "GUI":U THEN
   CREATE WINDOW C-Win ASSIGN
          HIDDEN             = YES
          TITLE              = "Customers"
-         HEIGHT             = 12.29
+         HEIGHT             = 13.38
          WIDTH              = 91.8
          MAX-HEIGHT         = 48.43
          MAX-WIDTH          = 384
          VIRTUAL-HEIGHT     = 48.43
          VIRTUAL-WIDTH      = 384
-         RESIZE             = yes
-         SCROLL-BARS        = no
-         STATUS-AREA        = no
+         RESIZE             = YES
+         SCROLL-BARS        = NO
+         STATUS-AREA        = NO
          BGCOLOR            = ?
          FGCOLOR            = ?
-         KEEP-FRAME-Z-ORDER = yes
-         THREE-D            = yes
-         MESSAGE-AREA       = no
-         SENSITIVE          = yes.
+         KEEP-FRAME-Z-ORDER = YES
+         THREE-D            = YES
+         MESSAGE-AREA       = NO
+         SENSITIVE          = YES.
 ELSE {&WINDOW-NAME} = CURRENT-WINDOW.
 
 ASSIGN {&WINDOW-NAME}:MENUBAR    = MENU MENU-BAR-C-Win:HANDLE.
@@ -282,7 +282,7 @@ ASSIGN
 /* SETTINGS FOR FILL-IN fiRepName IN FRAME DEFAULT-FRAME
    NO-ENABLE                                                            */
 IF SESSION:DISPLAY-TYPE = "GUI":U AND VALID-HANDLE(C-Win)
-THEN C-Win:HIDDEN = no.
+THEN C-Win:HIDDEN = NO.
 
 /* _RUN-TIME-ATTRIBUTES-END */
 &ANALYZE-RESUME
@@ -345,7 +345,7 @@ DO:
         IF NOT VALID-HANDLE(hDetails)
             THEN DO:
                 RUN wDetails.w PERSISTENT SET hDetails.   
-            SUBSCRIBE TO "CustomerDetailsChanged":U IN hDetails.
+                SUBSCRIBE TO "CustomerDetailsChanged":U IN hDetails.
             END.
         RUN "SwitchNavButtons". 
         PUBLISH "FetchCurrentCust":U (ttCustomer.CustNum, ttCustomer.Name).  
@@ -870,7 +870,7 @@ PROCEDURE ReopenQuery :
     
     hQueryHandle = BROWSE brCustomer:QUERY.
     hQueryHandle:QUERY-CLOSE ().
-    hQueryHandle:QUERY-PREPARE(SUBSTITUTE("FOR EACH ttCustomer NO-LOCK &1 &2":U, gcSortClause, GetWhereClause())).
+    hQueryHandle:QUERY-PREPARE(SUBSTITUTE("PRESELECT EACH ttCustomer NO-LOCK &1 &2":U, gcSortClause, GetWhereClause())).
     hQueryHandle:QUERY-OPEN().
 
 END PROCEDURE.
@@ -889,6 +889,8 @@ PROCEDURE SwitchNavButtons :
 
     iCurrentRow = CURRENT-RESULT-ROW("brCustomer").
     iLastRow = NUM-RESULTS("brCustomer").
+    MESSAGE iLastRow
+    VIEW-AS ALERT-BOX.
 
     IF iCurrentRow = 1 THEN 
         PUBLISH "SetButtons"("DisableFirst").
