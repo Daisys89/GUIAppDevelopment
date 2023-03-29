@@ -15,8 +15,7 @@ DEFINE TEMP-TABLE ttInvoice NO-UNDO LIKE Sports2000.Invoice
 DEFINE TEMP-TABLE ttItem NO-UNDO LIKE Sports2000.Item.
 DEFINE TEMP-TABLE ttOrder NO-UNDO LIKE Sports2000.Order
        FIELD RowIdent AS ROWID
-       INDEX RowIdent RowIdent
-       .
+       INDEX RowIdent RowIdent.      
 DEFINE TEMP-TABLE ttOrderLine NO-UNDO LIKE Sports2000.OrderLine
        FIELD RowIdent AS ROWID
        INDEX RowIdent RowIdent.
@@ -475,11 +474,13 @@ PROCEDURE GetOrderData :
   Parameters:  ttOrder - Temp-table used to pass records between procedures.
   Notes:       
 ------------------------------------------------------------------------------*/
+    DEFINE INPUT  PARAMETER piCustNum AS INTEGER.
     DEFINE OUTPUT PARAMETER TABLE FOR ttOrder.
+    
 
     EMPTY TEMP-TABLE ttOrder NO-ERROR.
 
-    FOR EACH Order NO-LOCK: 
+    FOR EACH Order WHERE Order.CustNum = piCustNum NO-LOCK: 
         CREATE ttOrder.
         BUFFER-COPY Order TO ttOrder.
         ASSIGN ttOrder.rowIdent = ROWID(Order).
