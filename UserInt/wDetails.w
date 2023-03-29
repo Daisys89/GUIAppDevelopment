@@ -9,6 +9,7 @@
 /* Temp-Table and Buffer definitions                                    */
 DEFINE TEMP-TABLE ttCustomer NO-UNDO LIKE Customer
        FIELD RowIdent AS ROWID
+       FIELD Orders AS INTEGER
        INDEX RowIdent RowIdent.
 DEFINE TEMP-TABLE ttSalesrep NO-UNDO LIKE Salesrep
        FIELD RowIdent AS ROWID
@@ -193,6 +194,7 @@ DEFINE FRAME DEFAULT-FRAME
       TABLE: ttCustomer T "?" NO-UNDO sports2000 Customer
       ADDITIONAL-FIELDS:
           FIELD RowIdent AS ROWID
+          FIELD Orders AS INTEGER
           INDEX RowIdent RowIdent
       END-FIELDS.
       TABLE: ttSalesrep T "?" NO-UNDO sports2000 Salesrep
@@ -217,15 +219,15 @@ IF SESSION:DISPLAY-TYPE = "GUI":U THEN
          MAX-WIDTH          = 99.6
          VIRTUAL-HEIGHT     = 18.24
          VIRTUAL-WIDTH      = 99.6
-         RESIZE             = yes
-         SCROLL-BARS        = no
-         STATUS-AREA        = no
+         RESIZE             = YES
+         SCROLL-BARS        = NO
+         STATUS-AREA        = NO
          BGCOLOR            = ?
          FGCOLOR            = ?
-         KEEP-FRAME-Z-ORDER = yes
-         THREE-D            = yes
-         MESSAGE-AREA       = no
-         SENSITIVE          = yes.
+         KEEP-FRAME-Z-ORDER = YES
+         THREE-D            = YES
+         MESSAGE-AREA       = NO
+         SENSITIVE          = YES.
 ELSE {&WINDOW-NAME} = CURRENT-WINDOW.
 /* END WINDOW DEFINITION                                                */
 &ANALYZE-RESUME
@@ -260,7 +262,7 @@ ELSE {&WINDOW-NAME} = CURRENT-WINDOW.
 /* SETTINGS FOR FILL-IN ttCustomer.State IN FRAME DEFAULT-FRAME
    NO-ENABLE                                                            */
 IF SESSION:DISPLAY-TYPE = "GUI":U AND VALID-HANDLE(C-Win)
-THEN C-Win:HIDDEN = no.
+THEN C-Win:HIDDEN = NO.
 
 /* _RUN-TIME-ATTRIBUTES-END */
 &ANALYZE-RESUME
@@ -328,7 +330,7 @@ DO:
         IF AVAILABLE ttCustomer THEN 
             DISPLAY {&DISPLAYED-FIELDS} WITH FRAME {&FRAME-NAME}.   
        
-        PUBLISH "CustomerDetailsChanged":U (ttCustomer.CustNum, "First":U).
+        PUBLISH "CustomerDetailsChanged":U (ttCustomer.CustNum, "First":U). // per default FROM THIS-PROCEDURE.
         PUBLISH "FetchCurrentCust":U(ttCustomer.CustNum).
 
     END.

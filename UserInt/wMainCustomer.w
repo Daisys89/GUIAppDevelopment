@@ -199,7 +199,7 @@ DEFINE FRAME DEFAULT-FRAME
      fiCustNum AT ROW 9.81 COL 2.8 NO-LABEL WIDGET-ID 2
      fiCustName AT ROW 9.81 COL 15.4 NO-LABEL WIDGET-ID 4
      fiRepName AT ROW 11.48 COL 15 COLON-ALIGNED WIDGET-ID 70
-     btnOrders AT ROW 11.48 COL 72.8 WIDGET-ID 12
+     btnOrders AT ROW 11.48 COL 73.4 WIDGET-ID 12
     WITH 1 DOWN NO-BOX KEEP-TAB-ORDER OVERLAY 
          SIDE-LABELS NO-UNDERLINE THREE-D 
          AT COL 2 ROW 1
@@ -246,15 +246,15 @@ IF SESSION:DISPLAY-TYPE = "GUI":U THEN
          MAX-WIDTH          = 384
          VIRTUAL-HEIGHT     = 48.43
          VIRTUAL-WIDTH      = 384
-         RESIZE             = YES
-         SCROLL-BARS        = NO
-         STATUS-AREA        = NO
+         RESIZE             = yes
+         SCROLL-BARS        = no
+         STATUS-AREA        = no
          BGCOLOR            = ?
          FGCOLOR            = ?
-         KEEP-FRAME-Z-ORDER = YES
-         THREE-D            = YES
-         MESSAGE-AREA       = NO
-         SENSITIVE          = YES.
+         KEEP-FRAME-Z-ORDER = yes
+         THREE-D            = yes
+         MESSAGE-AREA       = no
+         SENSITIVE          = yes.
 ELSE {&WINDOW-NAME} = CURRENT-WINDOW.
 
 ASSIGN {&WINDOW-NAME}:MENUBAR    = MENU MENU-BAR-C-Win:HANDLE.
@@ -282,7 +282,7 @@ ASSIGN
 /* SETTINGS FOR FILL-IN fiRepName IN FRAME DEFAULT-FRAME
    NO-ENABLE                                                            */
 IF SESSION:DISPLAY-TYPE = "GUI":U AND VALID-HANDLE(C-Win)
-THEN C-Win:HIDDEN = NO.
+THEN C-Win:HIDDEN = no.
 
 /* _RUN-TIME-ATTRIBUTES-END */
 &ANALYZE-RESUME
@@ -343,9 +343,12 @@ DO:
 ON DEFAULT-ACTION OF brCustomer IN FRAME DEFAULT-FRAME
 DO:
         IF NOT VALID-HANDLE(hDetails)
-            THEN RUN wDetails.w PERSISTENT SET hDetails.   
+            THEN DO:
+                RUN wDetails.w PERSISTENT SET hDetails.   
+            SUBSCRIBE TO "CustomerDetailsChanged":U IN hDetails.
+            END.
         RUN "SwitchNavButtons". 
-        PUBLISH "FetchCurrentCust":U (ttCustomer.CustNum).  
+        PUBLISH "FetchCurrentCust":U (ttCustomer.CustNum, ttCustomer.Name).  
     END.
 
 /* _UIB-CODE-BLOCK-END */
@@ -405,7 +408,7 @@ DO:
         
         RUN "SwitchNavButtons". 
         PUBLISH "ValueChangedbrCustomers":U (ttCustomer.CustNum). 
-        PUBLISH "FetchCurrentCust":U (ttCustomer.CustNum).
+        PUBLISH "FetchCurrentCust":U (ttCustomer.CustNum, ttCustomer.Name).
     END.
 
 /* _UIB-CODE-BLOCK-END */
@@ -419,7 +422,7 @@ DO:
         IF NOT VALID-HANDLE(hOrders)
             THEN RUN wOrderOverview.w PERSISTENT SET hOrders.
         
-        PUBLISH "FetchCurrentCust":U (ttCustomer.CustNum).
+        PUBLISH "FetchCurrentCust":U (ttCustomer.CustNum, ttCustomer.Name).
     END.
 
 /* _UIB-CODE-BLOCK-END */
@@ -493,7 +496,7 @@ DO:
 /*                                "AND "   + SUBSTITUTE("ttCustomer.Name BEGINS ~"&1~" ":U,fiCustName:SCREEN-VALUE) .*/
 /*            RUN ReopenQuery.                                                                                       */
 /*        END.                                                                                                       */
-    RUN ReopenQuery.
+        RUN ReopenQuery.
     END.
 
 /* _UIB-CODE-BLOCK-END */
@@ -584,7 +587,7 @@ ON CHOOSE OF MENU-ITEM m_First /* First */
 DO:
     APPLY "HOME" TO BROWSE {&BROWSE-NAME}.
     APPLY "VALUE-CHANGED" TO brCustomer IN FRAME {&FRAME-NAME}.
-    PUBLISH "FetchCurrentCust":U (ttCustomer.CustNum).
+    PUBLISH "FetchCurrentCust":U (ttCustomer.CustNum, ttCustomer.Name).
 END.
 
 /* _UIB-CODE-BLOCK-END */
@@ -597,7 +600,7 @@ ON CHOOSE OF MENU-ITEM m_Last /* Last */
 DO:
     APPLY "END" TO BROWSE {&BROWSE-NAME}.
     APPLY "VALUE-CHANGED" TO brCustomer IN FRAME {&FRAME-NAME}.
-    PUBLISH "FetchCurrentCust":U (ttCustomer.CustNum).
+    PUBLISH "FetchCurrentCust":U (ttCustomer.CustNum, ttCustomer.Name).
 END.
 
 /* _UIB-CODE-BLOCK-END */
@@ -665,7 +668,7 @@ DO ON ERROR   UNDO MAIN-BLOCK, LEAVE MAIN-BLOCK
     ON END-KEY UNDO MAIN-BLOCK, LEAVE MAIN-BLOCK:
     RUN InitializeObjects.
     RUN enable_UI.
-    SUBSCRIBE TO "CustomerDetailsChanged":U ANYWHERE.
+/*    SUBSCRIBE TO "CustomerDetailsChanged":U ANYWHERE.*/
     IF NOT THIS-PROCEDURE:PERSISTENT THEN
         WAIT-FOR CLOSE OF THIS-PROCEDURE.
 END.
@@ -817,7 +820,7 @@ PROCEDURE InitializeObjects :
     RUN GetCustData IN ghDataUtil (OUTPUT TABLE ttCustomer).
     
     // Only load if you click on customer record. better to add to value-changed?
-    RUN GetOrderData IN ghDataUtil (OUTPUT TABLE ttOrder).
+    //RUN GetOrderData IN ghDataUtil (OUTPUT TABLE ttOrder).
  
     brCustomer:LOAD-MOUSE-POINTER("Glove":U) IN FRAME {&FRAME-NAME}.
     

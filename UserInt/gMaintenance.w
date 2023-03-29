@@ -308,8 +308,12 @@ DO:
         MESSAGE SUBSTITUTE("Are you sure you want to loose the changes you made to customer ~"&1~" ?", ttCustomerUpd.Name)
             VIEW-AS ALERT-BOX BUTTONS YES-NO UPDATE lAnswer. 
         // Delete custnum if new customer is cancelled. When "New" is selected, new record is directly created.
-        IF  lAnswer THEN   
+        IF  lAnswer THEN 
+        DO:
+            IF pcMode = "New" THEN 
+                DELETE ttCustomerUpd.
             APPLY "CLOSE":U TO THIS-PROCEDURE.     
+        END.    
         ELSE 
             RETURN NO-APPLY.
     END.

@@ -8,8 +8,8 @@
 
 /* Temp-Table and Buffer definitions                                    */
 DEFINE TEMP-TABLE ttOrder NO-UNDO LIKE Order
-    FIELD RowIdent AS ROWID
-    INDEX RowIdent RowIdent.
+       FIELD RowIdent AS ROWID
+       INDEX RowIdent RowIdent.
 
 
 
@@ -96,27 +96,27 @@ ttOrder.OrderDate ttOrder.OrderStatus ttOrder.PromiseDate ttOrder.ShipDate
 /* ***********************  Control Definitions  ********************** */
 
 /* Define the widget handle for the window                              */
-DEFINE VAR      C-Win      AS WIDGET-HANDLE NO-UNDO.
+DEFINE VAR C-Win AS WIDGET-HANDLE NO-UNDO.
 
 /* Definitions of the field level widgets                               */
 /* Query definitions                                                    */
 &ANALYZE-SUSPEND
 DEFINE QUERY brOrder FOR 
-    ttOrder SCROLLING.
+      ttOrder SCROLLING.
 &ANALYZE-RESUME
 
 /* Browse definitions                                                   */
 DEFINE BROWSE brOrder
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _DISPLAY-FIELDS brOrder C-Win _STRUCTURED
-    QUERY brOrder NO-LOCK DISPLAY
-    ttOrder.CustNum FORMAT ">>>>9":U
-    ttOrder.Ordernum FORMAT "zzzzzzzzz9":U WIDTH 10.2
-    ttOrder.OrderDate COLUMN-LABEL "Order Date" FORMAT "99/99/99":U
-    WIDTH 11.2
-    ttOrder.OrderStatus FORMAT "x(20)":U WIDTH 17.2
-    ttOrder.PromiseDate COLUMN-LABEL "Promise Date" FORMAT "99/99/99":U
-    WIDTH 13.2
-    ttOrder.ShipDate COLUMN-LABEL "Ship Date" FORMAT "99/99/9999":U
+  QUERY brOrder NO-LOCK DISPLAY
+      ttOrder.CustNum FORMAT ">>>>9":U
+      ttOrder.Ordernum FORMAT "zzzzzzzzz9":U WIDTH 10.2
+      ttOrder.OrderDate COLUMN-LABEL "Order Date" FORMAT "99/99/99":U
+            WIDTH 11.2
+      ttOrder.OrderStatus FORMAT "x(20)":U WIDTH 17.2
+      ttOrder.PromiseDate COLUMN-LABEL "Promise Date" FORMAT "99/99/99":U
+            WIDTH 13.2
+      ttOrder.ShipDate COLUMN-LABEL "Ship Date" FORMAT "99/99/9999":U
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
     WITH NO-ROW-MARKERS SEPARATORS SIZE 82 BY 8.33 FIT-LAST-COLUMN.
@@ -125,11 +125,11 @@ DEFINE BROWSE brOrder
 /* ************************  Frame Definitions  *********************** */
 
 DEFINE FRAME DEFAULT-FRAME
-    brOrder AT ROW 1.48 COL 3 WIDGET-ID 200
+     brOrder AT ROW 1.48 COL 3 WIDGET-ID 200
     WITH 1 DOWN NO-BOX KEEP-TAB-ORDER OVERLAY 
-    SIDE-LABELS NO-UNDERLINE THREE-D 
-    AT COL 1 ROW 1
-    SIZE 91 BY 16.43 WIDGET-ID 100.
+         SIDE-LABELS NO-UNDERLINE THREE-D 
+         AT COL 1 ROW 1
+         SIZE 91 BY 16.43 WIDGET-ID 100.
 
 
 /* *********************** Procedure Settings ************************ */
@@ -153,24 +153,24 @@ DEFINE FRAME DEFAULT-FRAME
 
 &ANALYZE-SUSPEND _CREATE-WINDOW
 IF SESSION:DISPLAY-TYPE = "GUI":U THEN
-    CREATE WINDOW C-Win ASSIGN
-        HIDDEN             = YES
-        TITLE              = "Order Overview"
-        HEIGHT             = 9.19
-        WIDTH              = 85.6
-        MAX-HEIGHT         = 48.43
-        MAX-WIDTH          = 384
-        VIRTUAL-HEIGHT     = 48.43
-        VIRTUAL-WIDTH      = 384
-        RESIZE             = YES
-        SCROLL-BARS        = NO
-        STATUS-AREA        = NO
-        BGCOLOR            = ?
-        FGCOLOR            = ?
-        KEEP-FRAME-Z-ORDER = YES
-        THREE-D            = YES
-        MESSAGE-AREA       = NO
-        SENSITIVE          = YES.
+  CREATE WINDOW C-Win ASSIGN
+         HIDDEN             = YES
+         TITLE              = "Order Overview"
+         HEIGHT             = 10.19
+         WIDTH              = 91.2
+         MAX-HEIGHT         = 48.43
+         MAX-WIDTH          = 384
+         VIRTUAL-HEIGHT     = 48.43
+         VIRTUAL-WIDTH      = 384
+         RESIZE             = YES
+         SCROLL-BARS        = NO
+         STATUS-AREA        = NO
+         BGCOLOR            = ?
+         FGCOLOR            = ?
+         KEEP-FRAME-Z-ORDER = YES
+         THREE-D            = YES
+         MESSAGE-AREA       = NO
+         SENSITIVE          = YES.
 ELSE {&WINDOW-NAME} = CURRENT-WINDOW.
 /* END WINDOW DEFINITION                                                */
 &ANALYZE-RESUME
@@ -186,7 +186,7 @@ ELSE {&WINDOW-NAME} = CURRENT-WINDOW.
    FRAME-NAME                                                           */
 /* BROWSE-TAB brOrder 1 DEFAULT-FRAME */
 IF SESSION:DISPLAY-TYPE = "GUI":U AND VALID-HANDLE(C-Win)
-    THEN C-Win:HIDDEN = NO.
+THEN C-Win:HIDDEN = NO.
 
 /* _RUN-TIME-ATTRIBUTES-END */
 &ANALYZE-RESUME
@@ -222,7 +222,7 @@ IF SESSION:DISPLAY-TYPE = "GUI":U AND VALID-HANDLE(C-Win)
 &Scoped-define SELF-NAME C-Win
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL C-Win C-Win
 ON END-ERROR OF C-Win /* Order Overview */
-    OR ENDKEY OF {&WINDOW-NAME} ANYWHERE 
+OR ENDKEY OF {&WINDOW-NAME} ANYWHERE 
     DO:
         /* This case occurs when the user presses the "Esc" key.
            In a persistently run window, just ignore this.  If we did not, the
@@ -236,7 +236,7 @@ ON END-ERROR OF C-Win /* Order Overview */
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL C-Win C-Win
 ON WINDOW-CLOSE OF C-Win /* Order Overview */
-    DO:
+DO:
         /* This event will close the window and terminate the procedure.  */
         APPLY "CLOSE":U TO THIS-PROCEDURE.
         RETURN NO-APPLY.
@@ -275,7 +275,7 @@ DO ON ERROR   UNDO MAIN-BLOCK, LEAVE MAIN-BLOCK
     RUN enable_UI.
     SUBSCRIBE TO "ValueChangedbrCustomers":U    IN SOURCE-PROCEDURE.
     SUBSCRIBE TO "CustomerDetailsChanged":U     ANYWHERE.
-    SUBSCRIBE TO "FetchCurrentCust":U           ANYWHERE.
+    SUBSCRIBE TO "FetchCurrentCust":U           IN SOURCE-PROCEDURE.
     //SUBSCRIBE TO "CloseWindows":U               ANYWHERE.
     IF NOT THIS-PROCEDURE:PERSISTENT THEN
         WAIT-FOR CLOSE OF THIS-PROCEDURE.
@@ -287,10 +287,9 @@ END.
 
 /* **********************  Internal Procedures  *********************** */
 
-
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE CloseWindows C-Win
-PROCEDURE CloseWindows:
-    /*------------------------------------------------------------------------------
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE CloseWindows C-Win 
+PROCEDURE CloseWindows :
+/*------------------------------------------------------------------------------
      Purpose:
      Notes:
     ------------------------------------------------------------------------------*/
@@ -298,15 +297,13 @@ PROCEDURE CloseWindows:
     RETURN NO-APPLY.
 
 END PROCEDURE.
-    
+
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
 
-
-
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE CustomerDetailsChanged C-Win 
 PROCEDURE CustomerDetailsChanged :
-    /*------------------------------------------------------------------------------
+/*------------------------------------------------------------------------------
          Purpose:
          Notes:
         ------------------------------------------------------------------------------*/
@@ -343,18 +340,18 @@ END PROCEDURE.
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE disable_UI C-Win  _DEFAULT-DISABLE
 PROCEDURE disable_UI :
-    /*------------------------------------------------------------------------------
-      Purpose:     DISABLE the User Interface
-      Parameters:  <none>
-      Notes:       Here we clean-up the user-interface by deleting
-                   dynamic widgets we have created and/or hide 
-                   frames.  This procedure is usually called when
-                   we are ready to "clean-up" after running.
-    ------------------------------------------------------------------------------*/
-    /* Delete the WINDOW we created */
-    IF SESSION:DISPLAY-TYPE = "GUI":U AND VALID-HANDLE(C-Win)
-        THEN DELETE WIDGET C-Win.
-    IF THIS-PROCEDURE:PERSISTENT THEN DELETE PROCEDURE THIS-PROCEDURE.
+/*------------------------------------------------------------------------------
+  Purpose:     DISABLE the User Interface
+  Parameters:  <none>
+  Notes:       Here we clean-up the user-interface by deleting
+               dynamic widgets we have created and/or hide 
+               frames.  This procedure is usually called when
+               we are ready to "clean-up" after running.
+------------------------------------------------------------------------------*/
+  /* Delete the WINDOW we created */
+  IF SESSION:DISPLAY-TYPE = "GUI":U AND VALID-HANDLE(C-Win)
+  THEN DELETE WIDGET C-Win.
+  IF THIS-PROCEDURE:PERSISTENT THEN DELETE PROCEDURE THIS-PROCEDURE.
 END PROCEDURE.
 
 /* _UIB-CODE-BLOCK-END */
@@ -362,19 +359,19 @@ END PROCEDURE.
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE enable_UI C-Win  _DEFAULT-ENABLE
 PROCEDURE enable_UI :
-    /*------------------------------------------------------------------------------
-      Purpose:     ENABLE the User Interface
-      Parameters:  <none>
-      Notes:       Here we display/view/enable the widgets in the
-                   user-interface.  In addition, OPEN all queries
-                   associated with each FRAME and BROWSE.
-                   These statements here are based on the "Other 
-                   Settings" section of the widget Property Sheets.
-    ------------------------------------------------------------------------------*/
-    ENABLE brOrder 
-        WITH FRAME DEFAULT-FRAME IN WINDOW C-Win.
-    {&OPEN-BROWSERS-IN-QUERY-DEFAULT-FRAME}
-    VIEW C-Win.
+/*------------------------------------------------------------------------------
+  Purpose:     ENABLE the User Interface
+  Parameters:  <none>
+  Notes:       Here we display/view/enable the widgets in the
+               user-interface.  In addition, OPEN all queries
+               associated with each FRAME and BROWSE.
+               These statements here are based on the "Other 
+               Settings" section of the widget Property Sheets.
+------------------------------------------------------------------------------*/
+  ENABLE brOrder 
+      WITH FRAME DEFAULT-FRAME IN WINDOW C-Win.
+  {&OPEN-BROWSERS-IN-QUERY-DEFAULT-FRAME}
+  VIEW C-Win.
 END PROCEDURE.
 
 /* _UIB-CODE-BLOCK-END */
@@ -382,17 +379,22 @@ END PROCEDURE.
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE FetchCurrentCust C-Win 
 PROCEDURE FetchCurrentCust :
-    /*------------------------------------------------------------------------------
+/*------------------------------------------------------------------------------
          Purpose:
          Notes:
         ------------------------------------------------------------------------------*/
     DEFINE INPUT PARAMETER piCustNum AS INTEGER.
+    DEFINE INPUT PARAMETER piName AS CHARACTER.
     
-    FIND FIRST Customer WHERE Customer.CustNum = piCustNum NO-LOCK.
-    IF AVAILABLE Customer THEN 
-        OPEN QUERY brOrder FOR EACH ttOrder NO-LOCK  
-            WHERE ttOrder.CustNum = piCustNum.
-    {&WINDOW-NAME}:TITLE = "Orders of Customer ":U + STRING(Customer.Name).
+    RUN getOrderData IN ghDataUtil (INPUT piCustNum,OUTPUT TABLE ttOrder).
+    {&OPEN-QUERY-brOrder}
+    
+/*    FIND FIRST Customer WHERE Customer.CustNum = piCustNum NO-LOCK.*/
+/*    IF AVAILABLE Customer THEN                                     */
+/*        OPEN QUERY brOrder FOR EACH ttOrder NO-LOCK                */
+/*            WHERE ttOrder.CustNum = piCustNum.                     */
+
+    {&WINDOW-NAME}:TITLE = "Orders of Customer ":U + piName.
 
 END PROCEDURE.
 
@@ -401,7 +403,7 @@ END PROCEDURE.
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE InitializeObjects C-Win 
 PROCEDURE InitializeObjects :
-    /*------------------------------------------------------------------------------
+/*------------------------------------------------------------------------------
       Purpose:     
       Parameters:  <none>
       Notes:       
@@ -411,7 +413,7 @@ PROCEDURE InitializeObjects :
     /* Run the business logic utility persistently and retrieve its handle*/
     ghDataUtil = DYNAMIC-FUNCTION('RunPersistent' IN ghProcLib, "DataUtil.p":U).
 
-    RUN getOrderData IN ghDataUtil (OUTPUT TABLE ttOrder).
+    // RUN getOrderData IN ghDataUtil (OUTPUT TABLE ttOrder).
 
 END PROCEDURE.
 
@@ -420,7 +422,7 @@ END PROCEDURE.
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE ValueChangedbrCustomers C-Win 
 PROCEDURE ValueChangedbrCustomers :
-    /*------------------------------------------------------------------------------
+/*------------------------------------------------------------------------------
          Purpose:
          Notes:
         ------------------------------------------------------------------------------*/
