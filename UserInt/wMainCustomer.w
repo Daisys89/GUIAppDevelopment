@@ -10,6 +10,7 @@
 DEFINE TEMP-TABLE ttCustomer NO-UNDO LIKE Customer
        FIELD RowIdent AS ROWID
        FIELD NumOrders AS INTEGER
+       INDEX CustNum CustNum
        INDEX RowIdent RowIdent.
 DEFINE TEMP-TABLE ttOrder NO-UNDO LIKE Order
        FIELD RowIdent AS ROWID.
@@ -218,6 +219,7 @@ DEFINE FRAME DEFAULT-FRAME
       ADDITIONAL-FIELDS:
           FIELD RowIdent AS ROWID
           FIELD NumOrders AS INTEGER
+          INDEX CustNum CustNum
           INDEX RowIdent RowIdent
       END-FIELDS.
       TABLE: ttOrder T "?" NO-UNDO sports2000 Order
@@ -240,7 +242,7 @@ IF SESSION:DISPLAY-TYPE = "GUI":U THEN
   CREATE WINDOW C-Win ASSIGN
          HIDDEN             = YES
          TITLE              = "Customers"
-         HEIGHT             = 13.38
+         HEIGHT             = 12.05
          WIDTH              = 91.8
          MAX-HEIGHT         = 48.43
          MAX-WIDTH          = 384
@@ -369,13 +371,6 @@ DO:
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL brCustomer C-Win
 ON START-SEARCH OF brCustomer IN FRAME DEFAULT-FRAME
 DO:
-        // How to sort orders now its a result of a function?. 
-        /*    ROWID en FOCUSED-ROW bewaren voor de open query.              */
-        /*    Na de open query het record zoeken met een find.              */
-        /*    Daarna een REPOSITION TO ROWID en een SET-REPOSITIONED-ROW    */
-/*        MESSAGE ttCustomer.CustNum ttCustomer.Name*/
-/*        VIEW-AS ALERT-BOX.                        */
-        
         DEFINE VARIABLE rRowid AS ROWID NO-UNDO.
         DEFINE VARIABLE iRow   AS INTEGER NO-UNDO.
         
@@ -385,11 +380,8 @@ DO:
         gcSortClause = "BY " + BROWSE brCustomer:CURRENT-COLUMN:NAME.
         RUN ReopenQuery.
         
-        brCustomer:QUERY:REPOSITION-TO-ROWID (rRowid).
         brCustomer:SET-REPOSITIONED-ROW (iRow).
-        MESSAGE iRow
-        VIEW-AS ALERT-BOX.
-        
+        brCustomer:QUERY:REPOSITION-TO-ROWID (rRowid).        
     END.
 
 /* _UIB-CODE-BLOCK-END */
@@ -398,8 +390,7 @@ DO:
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL brCustomer C-Win
 ON VALUE-CHANGED OF brCustomer IN FRAME DEFAULT-FRAME
-DO:         
-        
+DO:                
         FOR EACH SalesRep WHERE Salesrep.SalesRep = ttCustomer.SalesRep:
             fiRepName = Salesrep.RepName.
         END.
@@ -432,32 +423,7 @@ DO:
 &Scoped-define SELF-NAME fiCustName
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL fiCustName C-Win
 ON VALUE-CHANGED OF fiCustName IN FRAME DEFAULT-FRAME
-DO:
-/*        giCustNum = INTEGER(fiCustNum:SCREEN-VALUE).                                                               */
-/*        IF giCustNum = 0 THEN                                                                                      */
-/*        DO:                                                                                                        */
-/*            IF (fiCustName:SCREEN-VALUE = "") THEN                                                                 */
-/*            DO:                                                                                                    */
-/*                gcWhereClause = "".                                                                                */
-/*                RUN ReopenQuery.                                                                                   */
-/*            END.                                                                                                   */
-/*            ELSE                                                                                                   */
-/*                gcWhereClause = "WHERE " + SUBSTITUTE("ttCustomer.Name BEGINS ~"&1~" ":U,fiCustName:SCREEN-VALUE). */
-/*            RUN ReopenQuery.                                                                                       */
-/*        END.                                                                                                       */
-/*                                                                                                                   */
-/*        IF giCustNum <> 0 THEN                                                                                     */
-/*        DO:                                                                                                        */
-/*            IF (fiCustName:SCREEN-VALUE = "") THEN                                                                 */
-/*            DO:                                                                                                    */
-/*                gcWhereClause = "WHERE " + SUBSTITUTE("ttCustomer.CustNum >= ~"&1~" ":U,giCustNum).                */
-/*                RUN ReopenQuery.                                                                                   */
-/*            END.                                                                                                   */
-/*            ELSE                                                                                                   */
-/*                gcWhereClause = "WHERE " + SUBSTITUTE("ttCustomer.Name BEGINS ~"&1~" ":U,fiCustName:SCREEN-VALUE) +*/
-/*                                "AND "   + SUBSTITUTE("ttCustomer.CustNum >= ~"&1~" ":U,giCustNum) .               */
-/*            RUN ReopenQuery.                                                                                       */
-/*        END.   */       
+DO:  
     RUN ReopenQuery.
                                                                                            
     END.
@@ -470,32 +436,6 @@ DO:
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL fiCustNum C-Win
 ON VALUE-CHANGED OF fiCustNum IN FRAME DEFAULT-FRAME
 DO:
-/*        giCustNum = INTEGER(fiCustNum:SCREEN-VALUE).                                                               */
-/*                                                                                                                   */
-/*        IF fiCustName:SCREEN-VALUE = "" THEN                                                                       */
-/*        DO:                                                                                                        */
-/*            IF giCustNum = 0 THEN                                                                                  */
-/*            DO:                                                                                                    */
-/*                gcWhereClause = "".                                                                                */
-/*                RUN ReopenQuery.                                                                                   */
-/*            END.                                                                                                   */
-/*            ELSE                                                                                                   */
-/*                gcWhereClause = "WHERE " + SUBSTITUTE("ttCustomer.CustNum >= ~"&1~" ":U,giCustNum).                */
-/*            RUN ReopenQuery.                                                                                       */
-/*        END.                                                                                                       */
-/*                                                                                                                   */
-/*        IF fiCustName:SCREEN-VALUE <> "" THEN                                                                      */
-/*        DO:                                                                                                        */
-/*            IF giCustNum = 0 THEN                                                                                  */
-/*            DO:                                                                                                    */
-/*                gcWhereClause = "WHERE " + SUBSTITUTE("ttCustomer.Name BEGINS ~"&1~" ":U,fiCustName:SCREEN-VALUE). */
-/*                RUN ReopenQuery.                                                                                   */
-/*            END.                                                                                                   */
-/*            ELSE                                                                                                   */
-/*                gcWhereClause = "WHERE " + SUBSTITUTE("ttCustomer.CustNum >= ~"&1~" ":U,giCustNum) +               */
-/*                                "AND "   + SUBSTITUTE("ttCustomer.Name BEGINS ~"&1~" ":U,fiCustName:SCREEN-VALUE) .*/
-/*            RUN ReopenQuery.                                                                                       */
-/*        END.                                                                                                       */
         RUN ReopenQuery.
     END.
 
@@ -818,9 +758,6 @@ PROCEDURE InitializeObjects :
     ghDataUtil = DYNAMIC-FUNCTION('RunPersistent' IN ghProcLib, "DataUtil.p":U).
  
     RUN GetCustData IN ghDataUtil (OUTPUT TABLE ttCustomer).
-    
-    // Only load if you click on customer record. better to add to value-changed?
-    //RUN GetOrderData IN ghDataUtil (OUTPUT TABLE ttOrder).
  
     brCustomer:LOAD-MOUSE-POINTER("Glove":U) IN FRAME {&FRAME-NAME}.
     
@@ -888,9 +825,8 @@ PROCEDURE SwitchNavButtons :
     DEFINE VARIABLE iLastRow    AS INTEGER NO-UNDO.
 
     iCurrentRow = CURRENT-RESULT-ROW("brCustomer").
+    // NUM-RESULTS not yet working as expected.
     iLastRow = NUM-RESULTS("brCustomer").
-    MESSAGE iLastRow
-    VIEW-AS ALERT-BOX.
 
     IF iCurrentRow = 1 THEN 
         PUBLISH "SetButtons"("DisableFirst").
@@ -938,7 +874,6 @@ FUNCTION GetWhereClause RETURNS CHARACTER
             ASSIGN cWhereClause = "WHERE " + cWhereClause.
         
         RETURN cWhereClause.
-
 END FUNCTION.
 
 /* _UIB-CODE-BLOCK-END */

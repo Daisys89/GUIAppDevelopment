@@ -156,21 +156,21 @@ IF SESSION:DISPLAY-TYPE = "GUI":U THEN
   CREATE WINDOW C-Win ASSIGN
          HIDDEN             = YES
          TITLE              = "Order Overview"
-         HEIGHT             = 10.19
-         WIDTH              = 91.2
+         HEIGHT             = 9.19
+         WIDTH              = 85.6
          MAX-HEIGHT         = 48.43
          MAX-WIDTH          = 384
          VIRTUAL-HEIGHT     = 48.43
          VIRTUAL-WIDTH      = 384
-         RESIZE             = YES
-         SCROLL-BARS        = NO
-         STATUS-AREA        = NO
+         RESIZE             = yes
+         SCROLL-BARS        = no
+         STATUS-AREA        = no
          BGCOLOR            = ?
          FGCOLOR            = ?
-         KEEP-FRAME-Z-ORDER = YES
-         THREE-D            = YES
-         MESSAGE-AREA       = NO
-         SENSITIVE          = YES.
+         KEEP-FRAME-Z-ORDER = yes
+         THREE-D            = yes
+         MESSAGE-AREA       = no
+         SENSITIVE          = yes.
 ELSE {&WINDOW-NAME} = CURRENT-WINDOW.
 /* END WINDOW DEFINITION                                                */
 &ANALYZE-RESUME
@@ -186,7 +186,7 @@ ELSE {&WINDOW-NAME} = CURRENT-WINDOW.
    FRAME-NAME                                                           */
 /* BROWSE-TAB brOrder 1 DEFAULT-FRAME */
 IF SESSION:DISPLAY-TYPE = "GUI":U AND VALID-HANDLE(C-Win)
-THEN C-Win:HIDDEN = NO.
+THEN C-Win:HIDDEN = no.
 
 /* _RUN-TIME-ATTRIBUTES-END */
 &ANALYZE-RESUME
