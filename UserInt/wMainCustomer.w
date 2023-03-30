@@ -242,21 +242,21 @@ IF SESSION:DISPLAY-TYPE = "GUI":U THEN
   CREATE WINDOW C-Win ASSIGN
          HIDDEN             = YES
          TITLE              = "Customers"
-         HEIGHT             = 12.05
-         WIDTH              = 91.8
+         HEIGHT             = 12.19
+         WIDTH              = 91.2
          MAX-HEIGHT         = 48.43
          MAX-WIDTH          = 384
          VIRTUAL-HEIGHT     = 48.43
          VIRTUAL-WIDTH      = 384
-         RESIZE             = YES
-         SCROLL-BARS        = NO
-         STATUS-AREA        = NO
+         RESIZE             = yes
+         SCROLL-BARS        = no
+         STATUS-AREA        = no
          BGCOLOR            = ?
          FGCOLOR            = ?
-         KEEP-FRAME-Z-ORDER = YES
-         THREE-D            = YES
-         MESSAGE-AREA       = NO
-         SENSITIVE          = YES.
+         KEEP-FRAME-Z-ORDER = yes
+         THREE-D            = yes
+         MESSAGE-AREA       = no
+         SENSITIVE          = yes.
 ELSE {&WINDOW-NAME} = CURRENT-WINDOW.
 
 ASSIGN {&WINDOW-NAME}:MENUBAR    = MENU MENU-BAR-C-Win:HANDLE.
@@ -284,7 +284,7 @@ ASSIGN
 /* SETTINGS FOR FILL-IN fiRepName IN FRAME DEFAULT-FRAME
    NO-ENABLE                                                            */
 IF SESSION:DISPLAY-TYPE = "GUI":U AND VALID-HANDLE(C-Win)
-THEN C-Win:HIDDEN = NO.
+THEN C-Win:HIDDEN = no.
 
 /* _RUN-TIME-ATTRIBUTES-END */
 &ANALYZE-RESUME
@@ -351,17 +351,6 @@ DO:
             END.
         RUN "SwitchNavButtons". 
         PUBLISH "FetchCurrentCust":U (ttCustomer.CustNum, ttCustomer.Name).  
-    END.
-
-/* _UIB-CODE-BLOCK-END */
-&ANALYZE-RESUME
-
-
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL brCustomer C-Win
-ON ENTRY OF brCustomer IN FRAME DEFAULT-FRAME
-DO:
-        // This is to make sure salesrep data is shown when first opening up the screen.
-        APPLY "VALUE-CHANGED":U TO brCustomer.  
     END.
 
 /* _UIB-CODE-BLOCK-END */
@@ -608,7 +597,7 @@ DO ON ERROR   UNDO MAIN-BLOCK, LEAVE MAIN-BLOCK
     ON END-KEY UNDO MAIN-BLOCK, LEAVE MAIN-BLOCK:
     RUN InitializeObjects.
     RUN enable_UI.
-/*    SUBSCRIBE TO "CustomerDetailsChanged":U ANYWHERE.*/
+    APPLY "VALUE-CHANGED":U TO brCustomer.
     IF NOT THIS-PROCEDURE:PERSISTENT THEN
         WAIT-FOR CLOSE OF THIS-PROCEDURE.
 END.
