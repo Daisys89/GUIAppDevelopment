@@ -330,13 +330,7 @@ ON CHOOSE OF Btn_Save IN FRAME Dialog-Frame /* Save */
         DEFINE VARIABLE lEmailValidated      AS LOGICAL NO-UNDO.
         DEFINE VARIABLE lPostalCodeValidated AS LOGICAL NO-UNDO.        
         
-        IF ttCustomerUpd.Country:SCREEN-VALUE = "NL" OR
-           ttCustomerUpd.Country:SCREEN-VALUE = "Netherlands" OR
-           ttCustomerUpd.Country:SCREEN-VALUE = "Nederland" THEN
-        DO:
-            lPostalCodeValidated = ValidatePostalCode(ttCustomerUpd.PostalCode:SCREEN-VALUE).
-        END.
-
+        lPostalCodeValidated = ValidatePostalCode(ttCustomerUpd.PostalCode:SCREEN-VALUE).
         IF NOT lPostalCodeValidated THEN
         DO:
             MESSAGE "You have entered an incorrect postal code. Please use format 1234AB."
@@ -718,10 +712,9 @@ END FUNCTION.
 FUNCTION ValidatePostalCode RETURNS LOGICAL
     ( INPUT cPostalCode AS CHARACTER ):
     /*------------------------------------------------------------------------------
-     Purpose: Only check if its NL customer.
-     Notes:  ADD AN INDEX? TO VERIFY IF FIRST 4 ARE NUMBERS AND LAST 2 ARE LETTERS?? 
+     Purpose:
+     Notes:  
     ------------------------------------------------------------------------------*/
-    DEFINE VARIABLE iIndex     AS INTEGER   NO-UNDO.
     DEFINE VARIABLE cPCNumbers AS CHARACTER NO-UNDO.
     DEFINE VARIABLE cPCLetters AS CHARACTER NO-UNDO.
   
